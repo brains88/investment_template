@@ -12,7 +12,7 @@
             <!-- Physical Address with Icon -->
             <div class="col-md-auto">
                 <p class="mb-0">
-                    <i class="fas fa-map-marker-alt" :style="{color: '#ffce28 !important'}"></i> Houston, Texas, United State.
+                    <i class="fas fa-map-marker-alt" :style="{color: '#ffce28 !important'}"></i>  Australia Square, Level 33/264 George St, Sydney NSW 2000, Australia
                 </p>
             </div>
             
@@ -39,6 +39,7 @@
     </div>
 </section>
 </template>
+
 
 <script>
 export default {

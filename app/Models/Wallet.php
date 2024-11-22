@@ -13,6 +13,9 @@ class Wallet extends Model
         'coin', 
         'network', 
         'address',
+        'min_amount',
+        'max_amount',
+        'image_path',
     ];
 
     public function user()

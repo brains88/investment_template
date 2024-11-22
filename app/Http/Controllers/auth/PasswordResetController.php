@@ -19,12 +19,15 @@ class PasswordResetController extends Controller
         try {
             // Validate the request
             $request->validate(['email' => 'required|email']);
-
+    
             Log::info('Password reset request received for email: ' . $request->email);
-
+    
+            // Check if the email already exists in the password_resets table
+            PasswordReset::where('email', $request->email)->delete(); // Delete any existing entry for the email
+    
             // Generate a unique token
             $token = Str::random(60);
-
+    
             // Store the token and its expiration time in the password_resets table
             $expiration = Carbon::now()->addHour(); // Set expiration time to 1 hour from now
             PasswordReset::create([
@@ -32,20 +35,21 @@ class PasswordResetController extends Controller
                 'token' => $token,
                 'expires_at' => $expiration,
             ]);
-
+    
             Log::info('Password reset token generated for email: ' . $request->email);
-
+    
             // Send the password reset email
-            Mail::to($request->email)->send(new ResetPasswordMail($token));
-
+            Mail::to($request->email)->send(new ResetPasswordMail($token, $request->email));
+    
             Log::info('Password reset email sent to: ' . $request->email);
-
+    
             return response()->json(['message' => 'An email has been sent.'], 200);
         } catch (\Exception $e) {
             Log::error('Error in sendResetLinkEmail: ' . $e->getMessage());
             return response()->json(['message' => 'An error occurred while sending the reset email.'], 500);
         }
     }
+    
 
     public function resetPassword(Request $request)
     {

@@ -8,27 +8,20 @@ use Auth;
 use Illuminate\Support\Facades\Log;
 class AuthCheckController extends Controller
 {
-    public function verify(Request $request)
-    {
-        // Check if the user is authenticated
-        if (Auth::check()) {
-            // User is authenticated, retrieve the logged-in user's details
-            $user = Auth::user();
-    
-            // Return the authenticated user's details as JSON response
-            return response()->json([
-                'authenticated' => true,
-                'user' => $user
-            ], 200);
-        } else {
-            // User is not authenticated
-            return response()->json([
-                'authenticated' => false,
-                'user' => null
-            ], 401);
+  // Check if the user is authenticated
+        public function verify()
+        {
+            if (auth()->check()) {
+                return response()->json([
+                    'authenticated' => true,
+                    'user' => auth()->user()
+                ]);
+            }
+        
+            return response()->json(['authenticated' => false], 401);
         }
-    }
-    
+        
+
     public function checkAdmin()
     {
         // Check if the authenticated user is an admin

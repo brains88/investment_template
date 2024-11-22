@@ -20,5 +20,15 @@ class Referral extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function referredUser()
+    {
+        return $this->belongsTo(User::class, 'referred_user_id');
+    }
+
+    public function investment()
+    {
+        return $this->hasMany(Investment::class, 'user_id', 'referred_user_id');
+    }
+
     
 }

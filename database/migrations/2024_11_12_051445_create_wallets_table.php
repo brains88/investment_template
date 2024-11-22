@@ -15,6 +15,9 @@ return new class extends Migration
             $table->string('coin');
             $table->string('network');
             $table->string('address');
+            $table->decimal('min_amount', 15, 2);
+            $table->decimal('max_amount', 15, 2);
+            $table->string('image_path')->nullable(); // Store the image path
             $table->timestamps();
         });
     }        

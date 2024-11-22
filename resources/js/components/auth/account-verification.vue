@@ -61,7 +61,8 @@ export default {
         this.loading = false; 
 
         if (response.data.redirect) {
-          this.$router.push(response.data.redirect);
+           // Use window.location.href to redirect to the Laravel route
+           window.location.href = response.data.redirect; // Laravel route will be sent here
         } else {
           // Optional: Handle case where there's no redirect
           this.successMessage = 'Verification successful!';

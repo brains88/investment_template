@@ -1,94 +1,106 @@
 <template>
-<div class="bg-dark">
-    <Navbar/>
+  <div class="bg-dark">
+    <Navbar />
     <div class="container mt-5 p-4">
-    <!-- Login Form -->
-    <div class="login-form-container">
-      <h1>Login</h1>
-      <form @submit.prevent="Login" class="login_form">
-        <div class="mb-3">
-          <label for="signinEmail" class="form-label">Email address</label>
-          <input type="email" class="form-control" placeholder="Email" v-model="email" required />
-          <span class="text-danger text-small">{{formErrors.email}}</span>
-        </div>
-        <div class="mb-3">
-          <label for="signinPassword" class="form-label">Password</label>
-          <input type="password" class="form-control" placeholder="********" v-model="password" required />
-          <span class="text-danger text-small">{{formErrors.password}}</span>
-        </div>
+      <!-- Login Form -->
+      <div class="login-form-container">
+        <h1>Login</h1>
+        <form @submit.prevent="Login" class="login_form">
+          <div class="mb-3">
+            <label for="signinEmail" class="form-label">Email address</label>
+            <input type="email" class="form-control" placeholder="Email" v-model="email" required />
+            <span class="text-danger text-small">{{ formErrors.email }}</span>
+          </div>
+          <div class="mb-3">
+            <label for="signinPassword" class="form-label">Password</label>
+            <input type="password" class="form-control" placeholder="********" v-model="password" required />
+            <span class="text-danger text-small">{{ formErrors.password }}</span>
+          </div>
+          
           <!-- Success and error messages -->
           <div class="message-container">
-            <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div>
-            <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+            <!-- Success message -->
+            <div v-if="successMessage" class="alert alert-success">
+              {{ successMessage }}
+            </div>
+            <!-- Error message -->
+            <div v-if="errorMessage" class="alert alert-danger">
+              {{ errorMessage }}
+            </div>
           </div>
-          <!--The end of success message-->
-
-        <button type="submit" class="btn submit-btn w-100" :disabled="loading">
-          <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-          Sign In
-        </button>
-        <div class="text-center mt-3">
-          <a href="#" @click.prevent="openForgotPasswordModal" :style="{ color: '#fff' }">Forgot Password?</a>
-        </div>
-        <div class="text-center mt-3">
-          <router-link to="/register"  :style="{ color: '#fff' }"> New User?</router-link>
-        </div>
-      </form>
-      </div>
-
-
-
-    <!-- Forgot Password Modal -->
-    <div v-if="showForgotPassword" class="modal-overlay" @click="closeModals">
-      <div class="modal-content" @click.stop>
-        <h2>Forgot Password</h2>
-        <form @submit.prevent="handleForgotPassword">
-          <div class="mb-3">
-            <label for="forgotEmail" class="form-label">Email address</label>
-            <input type="email" class="form-control" v-model="forgotEmail" required />
-          </div>
-          <button type="submit" class="btn modal-btn w-100" :style="{ backgroundColor: 'rgb(85, 43, 170)' }">
-            <span v-if="loadingForgot" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            Send Reset Link
+          
+          <button type="submit" class="btn submit-btn w-100" :disabled="loading">
+            <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Sign In
           </button>
+          
+          <div class="text-center mt-3">
+            <a href="#" @click.prevent="openForgotPasswordModal" :style="{ color: '#fff' }">Forgot Password?</a>
+          </div>
+          <div class="text-center mt-3">
+            <router-link to="/register" :style="{ color: '#fff' }"> New User?</router-link>
+          </div>
         </form>
-        <button @click="closeModals" class="modal-close">Close</button>
       </div>
+
+      <!-- Forgot Password Modal -->
+      <div v-if="showForgotPassword" class="modal-overlay" @click="closeModals">
+        <div class="modal-content" @click.stop>
+          <h2>Forgot Password</h2>
+          <form @submit.prevent="handleForgotPassword">
+            <div class="mb-3">
+              <label for="forgotEmail" class="form-label">Email address</label>
+              <input type="email" class="form-control" v-model="forgotEmail" required />
+            </div>
+                <!-- Success message -->
+                <div v-if="successMessage" class="alert alert-success">
+              {{ successMessage }}
+            </div>
+            <!-- Error message -->
+            <div v-if="errorMessage" class="alert alert-danger">
+              {{ errorMessage }}
+            </div>
+            <button type="submit" class="btn modal-btn w-100" :style="{ backgroundColor: 'rgb(85, 43, 170)' }">
+              <span v-if="loadingForgot" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Send Reset Link
+            </button>
+          </form>
+          <button @click="closeModals" class="modal-close">Close</button>
+        </div>
+      </div>
+
     </div>
-
-
-
-    </div>
-  <Footer/>
-</div>
+    <Footer />
+  </div>
 </template>
-  
-  <script>
-  import Navbar from '@/components/layouts/navbar.vue';
-  import Footer from '@/components/layouts/footer.vue';
-  export default {
-    components: {
-      Navbar,
-      Footer,
-    },
-    data() {
-      return {
-        email: '',
-        password: '',
-        loading: false,
-        errorMessage: '',
-        successMessage: '',
-        forgotEmail: '',
-        showForgotPassword: false,
-        showVerification: false,
-        verificationCode: '',
-        loadingForgot: false,
-        loadingVerification: false,
-        formErrors: {},
-      };
-    },
-    methods: {
-        Login() {
+
+
+<script>
+import Navbar from '@/components/layouts/navbar.vue';
+import Footer from '@/components/layouts/footer.vue';
+import axios from 'axios';
+
+export default {
+  components: {
+    Navbar,
+    Footer,
+  },
+  data() {
+    return {
+      email: '',
+      password: '',
+      loading: false,
+      errorMessage: '',
+      successMessage: '',
+      forgotEmail: '',
+      showForgotPassword: false,
+      loadingForgot: false,
+      formErrors: {},
+    };
+  },
+  methods: {
+    // Login method
+    Login() {
     this.loading = true;
     this.errorMessage = '';
     this.successMessage = '';
@@ -103,57 +115,53 @@
         .then(response => {
             if (response.data && response.data.message === 'Login successful') {
                 this.successMessage = response.data.message;
-                
-                // Redirect to the appropriate page based on the role
-                const redirect = response.data.redirect;
-                this.$router.push(redirect);
+                window.location.href = response.data.redirect; // Laravel route will be sent here
             } else {
                 this.errorMessage = response.data.message || 'Login failed. Please try again.';
             }
         })
         .catch(error => {
-            if (error.response && error.response.status === 403 && error.response.data.redirect) {
-                // Redirect to account activation if unverified
-                this.errorMessage = error.response.data.message;
-                this.$router.push(error.response.data.redirect);
-            } else if (error.response && error.response.status === 422) {
-                this.errors = error.response.data.errors;
-            } else {
-                this.errorMessage = 'Incorrect email or password.';
-            }
+            this.errorMessage = error.response ? error.response.data.message : 'Login failed.';
         })
-        .then(() => {
+        .finally(() => {
             this.loading = false;
         });
 },
-      async handleForgotPassword() {
-        this.loadingForgot = true;
-        // Simulate API request for sending password reset link
-        setTimeout(() => {
-          this.loadingForgot = false;
-          this.showForgotPassword = false; // Close modal after sending
-          alert("Reset link sent to your email!");
-        }, 1500);
-      },
-      async handleVerification() {
-        this.loadingVerification = true;
-        // Simulate verification process
-        setTimeout(() => {
-          this.loadingVerification = false;
-          this.showVerification = false; // Close modal after verification
-          alert("Verification successful!");
-        }, 1500);
-      },
-      openForgotPasswordModal() {
-        this.showForgotPassword = true;
-      },
-      closeModals() {
-        this.showForgotPassword = false;
-        this.showVerification = false;
-      },
+
+
+    // Handle password reset
+    async handleForgotPassword() {
+      this.loadingForgot = true;
+      try {
+        const response = await axios.post('/api/password/email', {
+          email: this.forgotEmail
+        });
+        if (response.data.success) {
+          this.successMessage = "Reset link sent to your email!";
+          this.showForgotPassword = false;
+        } else {
+          this.errorMessage = response.data.message;
+        }
+      } catch (error) {
+        this.errorMessage="Unable to send reset link. Try Again";
+      } finally {
+        this.loadingForgot = false;
+      }
     },
-  };
-  </script>
+
+    // Open the forgot password modal
+    openForgotPasswordModal() {
+      this.showForgotPassword = true;
+    },
+
+    // Close the modals
+    closeModals() {
+      this.showForgotPassword = false;
+    },
+  },
+};
+</script>
+
   
   
   <style scoped>

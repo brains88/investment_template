@@ -4,7 +4,44 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="shortcut icon" href="" type="image/x-icon">
-        <title>Equitify Trades</title>
+        <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<!-- Primary SEO Meta Tags -->
+<meta name="description" content="Equitify Trades LC is a leading AI-driven trading and investment company. Maximize your returns with advanced AI algorithms and automated trading bots. Join us for secure and profitable investments." />
+<meta name="keywords" content="AI trading, automated trading, investment platform, crypto trading, stock trading, AI investment, secure trading, high returns, automated bots, Equitify Trades" />
+
+<!-- Favicon and Icons -->
+<link rel="shortcut icon" type="image/png" href="{{ asset('assets/img/logo.png') }}" />
+<link rel="apple-touch-icon" href="{{ asset('assets/img/logo.png') }}" />
+
+<title>Equitify Trades LC | AI-Driven Trading & Investments</title>
+
+<!-- Social Media / Open Graph Tags -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Equitify Trades LC | AI-Driven Trading & Investments" />
+<meta property="og:description" content="Discover a smarter way to trade and invest. Equitify Trades LC uses AI-powered trading and automated bots for consistent profits and secure investments. Join today." />
+<meta property="og:image" content="{{ asset('assets/img/logo.png') }}" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:url" content="https://www.equitifytrades.com" />
+<meta property="og:site_name" content="Equitify Trades LC" />
+
+<!-- Schema.org / Google Structured Data -->
+<meta itemprop="name" content="Equitify Trades LC | AI-Driven Trading & Investments" />
+<meta itemprop="description" content="Equitify Trades LC is a cutting-edge trading company using AI and automation for optimal investment strategies and high returns." />
+<meta itemprop="image" content="{{ asset('assets/img/logo.png') }}" />
+
+<!-- Mobile Optimization -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="apple-mobile-web-app-title" content="Equitify Trades LC | AI Investments" />
+
+<!-- Additional Meta Tags -->
+<meta name="robots" content="index, follow" />
+<meta name="author" content="Equitify Trades" />
+<meta name="theme-color" content="#0044cc" />
+
         <!--Favicon-->
         <link rel="shortcut icon" type="image/png" href="assets/img/logo.png">
         <!--icofont icon css-->
@@ -47,6 +84,9 @@
     </body>
     
     @vite('resources/js/app.js')
+    <!-- The Tido -->
+<script src="//code.tidio.co/8qzi9njq6nkeeus10esgfv7ricxyjadv.js" async></script>
+<!-- The end of Tido -->
    <script src="assets/js/app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js" integrity="sha512-6sSYJqDreZRZGkJ3b+YfdhB3MzmuP9R7X1QZ6g5aIXhRvR1Y/N/P47jmnkENm7YL3oqsmI6AK+V6AD99uWDnIw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

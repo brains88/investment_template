@@ -13,12 +13,12 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-        
+    
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             
             // Check if the user is unverified
-            if ($user->status=== 'unverified') {
+            if ($user->verification === 'unverified') {
                 Auth::logout();
                 return response()->json([
                     'message' => 'Your account is not verified. Please activate your account.',
@@ -26,39 +26,32 @@ class LoginController extends Controller
                 ], 403);
             }
     
-            // Get the user's role
-            $role = $user->role;
     
-            // Redirect based on the role
-            if ($role === 'admin') {
-                Auth::login($user);
+            // Redirect based on the user's role
+            if ($user->role === 'admin') {
                 return response()->json([
                     'message' => 'Login successful',
-                    'role' => $role,
-                    'redirect' => '/admin'
-                ], 200);
-            } elseif ($role === 'user') {
-                Auth::login($user);
+                    'redirect' => route('admin.dashboard') // Return Laravel route to redirect to
+                ]);
+            } elseif ($user->role === 'user') {
                 return response()->json([
                     'message' => 'Login successful',
-                    'role' => $role,
-                    'redirect' => '/dashboard'
-                ], 200);
-            } else {
-                return response()->json([
-                    'message' => 'Login successful',
-                    'role' => $role,
-                    'redirect' => '/'
-                ], 200);
+                    'redirect' => route('user.dashboard') // Return Laravel route to redirect to
+                ]);
             }
+    
+            Auth::logout();
+            return response()->json(['message' => 'Unauthorized role.']);
         }
     
-        return response()->json(['error' => 'Unauthorized'], 401);
+        return response()->json(['message' => 'Invalid email or password.'], 401);
     }
     
     
     
- // For Account Activation
+    
+    
+// For Account Activation
 public function activateAccount(Request $request)
 {
     $request->validate([
@@ -68,34 +61,55 @@ public function activateAccount(Request $request)
     // Find the user by activation code
     $user = User::where('verification_code', $request->verificationCode)->first();
 
-    // If the activation code is invalid
+    // Handle invalid verification code
     if (!$user) {
-        return response()->json([
-            'message' => 'Invalid Verification Code.',
-        ], 401);
+        return redirect()->back()->withErrors([
+            'error' => 'Invalid Verification Code.',
+        ]);
     }
 
-    // If the user is already verified
+    // Check if the user is already verified
     if ($user->status === 'verified') {
+       // Redirect based on the user's role
+       if ($user->role === 'admin') {
         return response()->json([
-            'message' => 'Your account is already verified.',
-            'redirect' => $user->role === 'admin' ? '/admin' : '/dashboard'
-        ], 200);
+            'message' => 'Login successful',
+            'redirect' => route('admin.dashboard') // Return Laravel route to redirect to
+        ]);
+    } elseif ($user->role === 'user') {
+        return response()->json([
+            'message' => 'Login successful',
+            'redirect' => route('user.dashboard') // Return Laravel route to redirect to
+        ]);
+    }
     }
 
-    // Activate the user's account
-    $user->status = 'verified';
-    $user->save();
+    // Update user's status to verified
+    $user->update([
+        'status' => 'verified',
+    ]);
 
     // Log in the user
     Auth::login($user);
 
-    // Redirect based on the role
-    $redirectUrl = $user->role === 'admin' ? '/admin' : '/dashboard';
-    return response()->json([
-        'message' => 'Account Verified successfully!',
-        'redirect' => $redirectUrl
-    ], 200);
+    // Redirect based on the user's role
+    if ($user->role === 'admin') {
+        return response()->json([
+            'message' => 'Login successful',
+            'redirect' => route('admin.dashboard') // Return Laravel route to redirect to
+        ]);
+    } elseif ($user->role === 'user' ) {
+
+        if($user->account === 'banned'){
+            return response()->json([
+                'message' => 'Sorry, You can has been Banned. Send mail or use the Chat support',
+            ]);  
+        }
+        return response()->json([
+            'message' => 'Login successful',
+            'redirect' => route('user.dashboard') // Return Laravel route to redirect to
+        ]);
+    }
 }
 
 
@@ -103,8 +117,18 @@ public function activateAccount(Request $request)
     public function logout(Request $request)
     {
         auth()->logout();
-        request()->session()->flush();
-        request()->session()->invalidate();
-        return response()->json(['message' => 'Logout successful'], 200);
+    
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+    
+        // Revoke tokens if using API tokens (optional)
+        if (Auth::check() && Auth::user()->tokens()->exists()) {
+            Auth::user()->tokens()->delete();
+        }
+    
+        return response()->json(['message' => 'Logged out successfully'], 200);
     }
+    
+    
+
 }

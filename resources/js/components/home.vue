@@ -42,55 +42,56 @@
     </div>
 
     <div class="statics-section">
-      <div class="container">
-        <div class="row" :style="{ marginTop: '10% !important' }">
-          <div class="col-lg-3 col-md-6 col-sm-6 text-center">
-            <div class="single-statics no-border">
-              <div class="icon-box">
-                <i class="ren-reguser"></i>
-              </div>
-              <div class="text-box">
-                <span class="counter">36967030</span>
-                <h4>Registered users</h4>
-              </div>
-            </div>
+  <div class="container">
+    <div class="row" :style="{ marginTop: '10% !important' }">
+        <div class="col-lg-3 col-md-6 col-sm-6 text-center">
+        <div class="single-statics">
+          <div class="icon-box">
+            <i class="fa fa-users" :style="{ fontSize:'25px', color:'#ffce28' }"></i> 
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 text-center">
-            <div class="single-statics">
-              <div class="icon-box">
-                <i class="ren-web"></i>
-              </div>
-              <div class="text-box">
-                <span class="counter">70</span>
-                <h4>Countries supported</h4>
-              </div>
-            </div>
+          <div class="text-box">
+            <span class="text-white" :style="{ fontWeight: '600 !important', fontSize:'40px' }">500</span>
+            <h4>Registered Users</h4>
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 text-center">
-            <div class="single-statics">
-              <div class="icon-box">
-                <i class="ren-withdraw"></i>
-              </div>
-              <div class="text-box">
-                <span class="counter">108000</span>
-                <h4>Withdrawn each month</h4>
-              </div>
-            </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6 text-center">
+        <div class="single-statics">
+          <div class="icon-box">
+            <i class="fa fa-globe" :style="{ fontSize:'25px', color:'#ffce28' }"></i> 
           </div>
-          <div class="col-lg-3 col-md-6 col-sm-6 text-center">
-            <div class="single-statics">
-              <div class="icon-box">
-                <i class="ren-people"></i>
-              </div>
-              <div class="text-box">
-                <span class="counter">500</span>
-                <h4>Active investors daily</h4>
-              </div>
-            </div>
+          <div class="text-box">
+            <span class="text-white" :style="{ fontWeight: '600 !important', fontSize:'40px' }">150</span>
+            <h4>Supported Countries</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6 text-center">
+        <div class="single-statics">
+          <div class="icon-box">
+            <i class="fa fa-money-bill-wave" :style="{ fontSize:'25px', color:'#ffce28' }"></i> 
+          </div>
+          <div class="text-box">
+            <span class="counter">10000</span>
+            <h4>Withdrawn Each Month</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 col-sm-6 text-center">
+        <div class="single-statics">
+          <div class="icon-box">
+            <i class="fa fa-chart-line" :style="{ fontSize:'25px', color:'#ffce28' }"></i>
+          </div>
+          <div class="text-box">
+            <span class="counter">400</span>
+            <h4>Active Investors Daily</h4>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
   </div>
 </section>
 
@@ -706,7 +707,9 @@
                                 <th scope="col">Deposit Method</th>
                                 <th scope="col">Amount Deposited</th>
                                 <th scope="col">Currency</th>
+                                <!--
                                 <th scope="col">Time</th>
+                                -->
                             </tr>
                             </thead>
                             <tbody>
@@ -723,7 +726,9 @@
                                 <td>{{ deposit.wallet.coin }} - {{ deposit.wallet.network }}</td>
                                 <td>{{ deposit.amount }}</td>
                                 <td>USD</td>
+                                <!--
                                 <td>{{ formatTimeAgo(deposit.created_at) }}</td>
+                                -->
                                 </tr>
                             </tbody>
                         </table>
@@ -737,7 +742,9 @@
                                 <th scope="col">Withdrawal Method</th>
                                 <th scope="col">Amount Withdrawn</th>
                                 <th scope="col">Currency</th>
+                                <!--
                                 <th scope="col">Time</th>
+                                -->
                             </tr>
                             </thead>
                             <tbody>
@@ -753,7 +760,9 @@
                                 <td>{{ withdrawal.method }}</td>
                                 <td>{{ withdrawal.amount }}</td>
                                 <td>USD</td>
-                                <td>{{ formatTimeAgo(withdrawal.created_at) }}</td>
+                                 <!--
+                                <td>{{ formatTimeAgo(deposit.created_at) }}</td>
+                                -->
                                 </tr>
                             </tbody>
                         </table>
@@ -1153,7 +1162,7 @@
     </div>
 </div>
 <!-- questions section end -->
-
+<TradingViewWidget/>
 <Footer/>
 </template>
 
@@ -1161,14 +1170,15 @@
   import Navbar from '@/components/layouts/navbar.vue';
   import Footer from '@/components/layouts/footer.vue';
   import { Bootstrap4Pagination } from 'laravel-vue-pagination';
-  import axios from 'axios';
-  
-  export default {
-    name: 'plans',
-    components: {
-      Navbar,
-      Footer,
-      Bootstrap4Pagination,
+  import TradingViewWidget from "@/components/TradingViewWidget.vue";
+import axios from "axios";
+
+export default {
+  name: "Plans",
+  components: {
+    Navbar,
+    Footer,
+    TradingViewWidget,
     },
     data() {
       return {
@@ -1176,7 +1186,6 @@
         authenticated: false,
         errorMessage: '',
         successMessage: '',
-        userData: {},
         investmentAmount: {},
         activeTab: 'deposits',
         deposits: [],
@@ -1188,29 +1197,66 @@
           perPage: 8,
           visiblePages: 8,
           lastPage: 1,
+          authenticated: false,
+            userData: null,
+            isLogout: false, // Flag to track if logout was initiated
         },
       };
     },
     created() {
-      this.checkAuthentication();
       this.fetchTransactions();
     },
     mounted() {
       document.title="Equitify Trades | Invest, Build and Grow.";
       this.getPlans();
-    },
+      this.checkAuthentication();
+},
     methods: {
-      async checkAuthentication() {
-        try {
-          const response = await axios.get('/api/verify');
-          this.authenticated = response.data.authenticated;
-          if (this.authenticated) {
-            this.userData = response.data.user;
-          }
-        } catch (error) {
-          console.error("Error checking authentication", error);
+        async checkAuthentication() {
+      try {
+        // Verify authentication status from the backend
+        const response = await axios.get('/api/verify');
+        const isAuthenticated = response.data.authenticated;
+
+        if (isAuthenticated) {
+          // User is not authenticated; trigger logout method
+          await this.logout();
         }
-      },
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          // If the server responds with 401, trigger logout
+        } else {
+          console.error('Error checking authentication:', error);
+        }
+    }
+    },
+
+    async logout() {
+      try {
+        // Call the Laravel logout endpoint to ensure the session is destroyed
+        await axios.post('/api/logout');
+
+        // Clear local authentication state
+        this.clearAuthState();
+
+        // Redirect to the login page
+        this.$router.push('/login');
+      } catch (error) {
+        console.error('Logout error:', error.response?.data || error);
+      }
+    },
+
+    clearAuthState() {
+      // Clear localStorage, sessionStorage, and cookies
+      localStorage.clear();
+      sessionStorage.clear();
+      document.cookie.split(";").forEach((c) => {
+        document.cookie = c.trim().split("=")[0] + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+      });
+    },
+
+
+
       async getPlans(page = 1) {
         try {
           const response = await axios.get(`/api/plans?page=${page}`);
@@ -1374,6 +1420,8 @@
   .card-button:hover {
     background-color: #d41c3a;
   }
+
+  
 
 
 </style>  

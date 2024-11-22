@@ -13,12 +13,40 @@ class WalletSeeder extends Seeder
     public function run(): void
     {
         $wallets = [
-            ['coin' => 'Bitcoin (BTC)', 'network' => 'TRC-20', 'address' => '7653925ojwkfh22fr92u8fg873892091'],
-            ['coin' => 'Bitcoin (BTC)', 'network' => 'BEP20', 'address' => '0073857348965ghd2u8fg873892091'],
-            ['coin' => 'Ethereum (ETH)', 'network' => 'BEP20', 'address' => '36675904-w2yertura'],
-            ['coin' => 'Ethereum (ETH)', 'network' => 'TRC-20', 'address' => 'hhjw273827t6gff8f79tyufwfywu'],
-            ['coin' => 'Tether (USDT)', 'network' => 'TRC-20', 'address' => '637239fgg827392r3r2389ty839'],
+            [
+                'coin' => 'Bitcoin (BTC)',
+                'network' => 'BTC',
+                'address' => '7653925ojwkfh22fr92u8fg873892091',
+                'image_path' => 'btc.jpeg',
+                'min_amount' =>300,
+                'max_amount'=>100000,
+            ],
+            [
+                'coin' => 'Ethereum (ETH)',
+                'network' => 'Eth',
+                'address' => '36675904-w2yertura',
+                'image_path' => 'eth.png',
+                'min_amount' =>300,
+                'max_amount'=>100000,
+            ],
+            [
+                'coin' => 'Tether (USDT)',
+                'network' => 'ERC-20',
+                'address' => '637239fgg827392r3r2389ty839',
+                'image_path' => 'usdt.png',
+                'min_amount' =>300,
+                'max_amount'=>100000,
+            ],
+            [
+                'coin' => 'Tether (USDT)',
+                'network' => 'TRC-20',
+                'address' => '637239fgg827392r3r2389ty839',
+                'image_path' => 'usdt.png',
+                'min_amount' =>300,
+                'max_amount'=>100000,
+            ],
         ];
+
 
         foreach ($wallets as $wallet) {
             Wallet::create($wallet);

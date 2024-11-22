@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
-use App\Models\{User,investment,plan,wallet,Deposit,Balance};
+use App\Models\{User,investment,plan,wallet,Deposit,Balance,withdrawal,referral};
 use App\Mail\WelcomeMail;
 use Str;
 use Auth;
@@ -15,50 +15,98 @@ class DashboardController extends Controller
 {
     //
 
-    public function getUserMetrics(Request $request)
+    public function index()
     {
+        // Check if a user is authenticated
         $userId = auth()->id();
-    
-        // Return default values if no user is authenticated
         if (!$userId) {
-            return response()->json([
-                'balance' => 0.00,
-                'withdrawal' => 0.00,
-                'deposit' => 0.00,
-                'investment' => 0.00,
-            ]);
+            return redirect('/login')->with('error', 'Please log in to access your dashboard.');
         }
     
-        // Get user balance or default to 0.00
-        $balance = DB::table('balances')
+         // Get the latest referral for the authenticated user
+            $latestReferral = Referral::with('referredUser')
             ->where('user_id', $userId)
-            ->value('balance') ?? 0.00;
+            ->latest()
+            ->first();
+        // Fetch the authenticated user with their relationships
+        $user = User::with(['balance', 'investment.plan', 'withdrawal', 'deposit'])->find($userId);
     
-        // Get the total withdrawal amount where status is completed or default to 0.00
+        // If user doesn't exist, redirect
+        if (!$user) {
+            return redirect('/login')->with('error', 'User not found.');
+        }
+
+        $balance = DB::table('balances')
+        ->where('user_id', $userId)->first();
+
         $withdrawal = DB::table('withdrawals')
             ->where('user_id', $userId)
             ->where('status', 'completed')
             ->sum('amount') ?? 0.00;
-    
-        // Get the total deposit amount where status is completed or default to 0.00
+
         $deposit = DB::table('deposits')
             ->where('user_id', $userId)
             ->where('status', 'completed')
             ->sum('amount') ?? 0.00;
-    
-        // Get the total investment amount or default to 0.00
+
         $investment = DB::table('investments')
             ->where('user_id', $userId)
             ->sum('amount') ?? 0.00;
     
-        // Return calculated metrics
-        return response()->json([
-            'balance' => $balance,
-            'withdrawal' => $withdrawal,
+        // Safely calculate investment and ROI percentages
+        $totalInvestment = $user->investment ? $user->investment->sum('amount') : 0;
+        $returnOnInvestment = $user->investment ? $user->investment->sum('return_on_investment') : 0;
+    
+        $investPercentage = $totalInvestment > 0 ? min(($totalInvestment / 100000) * 100, 100) : 0; // Example target of 100,000
+        $roiDecimal = $totalInvestment > 0 ? min(($returnOnInvestment / $totalInvestment) * 100, 100) : 0;
+        $roiPercentage = round($roiDecimal * 100 / 100, 2);  // Convert to percentage
+        // Calculate ROI speed based on the plan's duration
+        $investmenttartDate = optional($user->investment->first())->created_at; // Assume first investment for simplicity
+        $planDuration = optional(optional($user->investment->first())->plan)->duration; // Plan duration in months
+    
+        $roiSpeed = 0;
+        if ($investmenttartDate && $planDuration) {
+            $durationInDays = $planDuration * 30; // Convert months to days
+            $elapsedDays = now()->diffInDays($investmenttartDate);
+            $roiSpeed = $elapsedDays > 0 ? min(($elapsedDays / $durationInDays) * 100, 100) : 0;
+        }
+    
+        // Prepare monthly data for deposit, withdrawal, and investment
+        $depositData = $user->deposit
+            ? $user->deposit
+                ->groupBy(fn($deposit) => $deposit->created_at->format('m'))
+                ->map(fn($group) => $group->sum('amount'))
+            : collect();
+    
+        $withdrawalData = $user->withdrawal
+            ? $user->withdrawal
+                ->groupBy(fn($withdrawal) => $withdrawal->created_at->format('m'))
+                ->map(fn($group) => $group->sum('amount'))
+            : collect();
+    
+        $investmentData = $user->investment
+            ? $user->investment
+                ->groupBy(fn($investment) => $investment->created_at->format('m'))
+                ->map(fn($group) => $group->sum('amount'))
+            : collect();
+    
+        return view('user.dashboard', [
+            'investPercentage' => $investPercentage,
+            'roiPercentage' => $roiPercentage,
+            'roiSpeed' => $roiSpeed,
+            'depositData' => $depositData,
+            'withdrawalData' => $withdrawalData,
+            'investmentData' => $investmentData,
+            'userData' => $user,
+            'roiEarn' => $returnOnInvestment,
+            'balance'=>$balance,
+            'withdrawal'=>$withdrawal,
             'deposit' => $deposit,
             'investment' => $investment,
+            'latestReferral' =>$latestReferral,
         ]);
     }
+    
     
     //User Profile
 

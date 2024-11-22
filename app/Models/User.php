@@ -39,17 +39,17 @@ class User extends Authenticatable
         return $this->hasOne(Wallet::class);
     }
 
-    public function deposits()
+    public function deposit()
     {
         return $this->hasMany(Deposit::class);
     }
 
-    public function withdrawals()
+    public function withdrawal()
     {
         return $this->hasMany(Withdrawal::class);
     }
 
-    public function investments()
+    public function investment()
     {
         return $this->hasMany(Investment::class);
     }

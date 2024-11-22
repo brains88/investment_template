@@ -11,8 +11,8 @@ class HomeController extends Controller
 
     public function getLatestTransactions()
 {
-    $deposits = Deposit::with('wallet')->latest()->take(6)->get();
-    $withdrawals = Withdrawal::latest()->take(6)->get();
+    $deposits = Deposit::with('wallet')->latest()->take(3)->get();
+    $withdrawals = Withdrawal::latest()->take(3)->get();
 
     return response()->json([
         'deposits' => $deposits,

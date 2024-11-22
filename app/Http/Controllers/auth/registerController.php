@@ -22,7 +22,7 @@ class RegisterController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'country' => 'required|string|max:255',
             'mobile' => 'required|regex:/^\+?\d{8,15}$/|unique:users,mobile',
-            'profileImage' => 'nullable|image|max:2048',
+            'profileImage' => 'required|image|max:2048',
         ]);
     
         // Generate a six-digit verification code
@@ -43,7 +43,7 @@ class RegisterController extends Controller
             'username' => $validatedData['username'],
             'password' => Hash::make($validatedData['password']),
             'country' => $validatedData['country'],
-            'profileImage' => $validatedData['profileImage'] ?? null,
+            'image' => $validatedData['profileImage'],
             'verification_code' => $verificationCode, // Save verification code
         ]);
     

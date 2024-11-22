@@ -58,24 +58,32 @@
             </li>
           </ul>
         </div>
-        
-          <div id="google_translate_element" class="lang-mobile"></div>
-          
+      
         <!-- Right Side Button for Desktop -->
         <div class="right-side-box d-none d-lg-block">
-            <router-link v-if="authenticated && userData.role === 'user' " to="/dashboard" key="authenticated">
+                    <div>
+            <a 
+              v-if="authenticated && userData.role === 'user'" 
+              href="/dashboard"
+              key="authenticated"
+            >
               <img
-                  :src="userData.image ? '/storage/profile_images/' + userData.image : '/path/to/default/image.jpg'"
-                    alt="Dashboard" 
-                    class="slide-icon ml-3" 
-                    style="width:45px; height:45px; border-radius:50%;">
-             </router-link>
-             <router-link v-if="authenticated && (userData.role === 'admin')" 
+                :src="userData.image ? '/storage/profile_images/' + userData.image : '/path/to/default/image.jpg'"
+                alt="Dashboard" 
+                class="slide-icon ml-3" 
+                style="width:45px; height:45px; border-radius:50%;"
+              />
+            </a>
+            
+            <a 
+              v-if="authenticated && userData.role === 'admin'" 
+              href="/admin"
               class="consultant-btn text-uppercase" 
-              to="/admin" 
-              key="authenticated">
+              key="authenticated"
+            >
               Welcome Admin
-          </router-link>
+            </a>
+          </div>
 
           <router-link to="/login"  v-if="!authenticated" >
           <button class="join-btn">
@@ -100,9 +108,6 @@ export default {
   created() {
     this.checkAuthentication();
   },
-  mounted() {
-    this.loadGoogleTranslate();
-  },
   methods: {
     async checkAuthentication() {
       try {
@@ -120,37 +125,12 @@ export default {
       }
       
     },
-    loadGoogleTranslate() {
-      // Check if the Google Translate script is already loaded
-      if (!document.querySelector("script[src='//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit']")) {
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-        document.head.appendChild(script);
-      }
-
-      window.googleTranslateElementInit = () => {
-        // Only initialize if the element is not already initialized
-        if (!document.getElementById('google_translate_element').hasChildNodes()) {
-          new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
-        }
-      };
-    },
     reloadHome() {
       if (this.$route.path == '/home'|| this.$route.path == '/') {
 
         window.location.reload(); // Force a page reload
       }
     }
-    },
-     beforeDestroy() {
-        // Optionally, remove the translate element or clean up on component unmount
-        const translateContainer = document.getElementById('google_translate_element');
-        if (translateContainer) {
-          translateContainer.innerHTML = ''; // Clean the translate container
-        }
-
-
     },
     
 }
@@ -189,4 +169,5 @@ export default {
 .text-center a:hover {
   text-decoration: underline;
 }
+
 </style>

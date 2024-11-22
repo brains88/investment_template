@@ -29,7 +29,10 @@ class Investment extends Model
         return $this->belongsTo(Plan::class);
     }
 
-
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
 
 
     // Calculate ROI for the current investment
