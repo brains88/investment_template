@@ -34,7 +34,7 @@
                                             <p class="card-text text-center" style="font-size: 1rem; margin-bottom: 1rem;">
                                                 <span class="badge bg-success p-3 mb-3"><b>{{ $plan->interest }}%</b></span>
                                                 <br />
-                                                <span>Daily For {{ $plan->duration }} day(s)</span>
+                                                <span>For {{ $plan->duration }} Month</span>
                                             </p>
                                             <div class="min-max-info">
                                                 <p class="text-muted text-white mb-2" style="font-size: 0.9rem; color:white !important">

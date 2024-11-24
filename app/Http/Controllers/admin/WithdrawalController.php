@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Models\{User,investment,plan,wallet,Deposit,transfer,Balance,withdrawal};
+use App\Models\{User,Investment,Plan,Wallet,Deposit,Transfer,Balance,Withdrawal};
 use App\Mail\WithdrawalSubmittedMail;
 use Str;
 use Auth;

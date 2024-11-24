@@ -5,16 +5,21 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\User;
 
 class WelcomeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
+    public $user; 
     public $verificationCode;
 
-    public function __construct(User $user, $verificationCode)
+    /**
+     * Create a new message instance.
+     *
+     * @param \App\Models\User $user
+     * @param int $verificationCode
+     */
+    public function __construct($user, $verificationCode)
     {
         $this->user = $user;
         $this->verificationCode = $verificationCode;
@@ -22,11 +27,10 @@ class WelcomeMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Welcome to Our Platform')
-                    ->view('emails.welcome')
+        return $this->view('emails.welcome')
                     ->with([
-                        'name' => $this->user->username,
-                        'code' => $this->verificationCode,
+                        'name' => $this->user->name, // Pass the user's name
+                        'code' => $this->verificationCode, // Pass the verification code
                     ]);
     }
 }

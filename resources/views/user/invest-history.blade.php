@@ -47,7 +47,7 @@
                                                 {{ $investment->return_on_investment }} USD per {{ $investment->plan->duration }} Days
                                             </td>
                                             <td>
-                                                {{ $investment->amount * ($investment->return_on_investment / 100) }} USD
+                                                {{ $investment->amount * ($investment->return_on_investment / 10000) }} USD
                                             </td>
                                             <td>
                                             <div class="d-flex flex-column align-items-start">

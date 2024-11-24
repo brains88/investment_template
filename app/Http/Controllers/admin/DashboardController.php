@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
-use App\Models\{User,investment,plan,wallet,Deposit,Balance,withdrawal,referral};
+use App\Models\{User,Investment,Plan,Wallet,Deposit,Balance,Withdrawal,Referral};
 use App\Mail\WelcomeMail;
 use Str;
 use Auth;
@@ -17,13 +17,13 @@ class DashboardController extends Controller
 
     public function index()
     {
-        // Fetch totals for balances, interests, deposits, withdrawals, etc.
+        // Fetch totals for balances, interests, deposits, Withdrawals, etc.
         $totalUsers = User::where('role','user')->count(); // Count all users
         $totalBalances = Balance::sum('balance'); // Sum of all user balances
         $totalInterest = Balance::sum('interest'); // Sum of all user interest balances
         $totalDeposits = Deposit::sum('amount');
         $totalWithdrawals = Withdrawal::sum('amount');
-        $totalInvestments = Investment::sum('amount'); // Sum of user investments
+        $totalInvestments = Investment::sum('amount'); // Sum of user Investments
     
         // Prepare data for monthly charts
         $monthlyDeposits = Deposit::selectRaw('MONTH(created_at) as month, SUM(amount) as total')

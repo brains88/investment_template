@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
-use App\Models\{User,investment,plan,wallet,Deposit,Balance,withdrawal,transfer,referral};
+use App\Models\{User,Investment,Plan,Wallet,Deposit,Balance,Withdrawal,Transfer,Referral};
 use App\Mail\WelcomeMail;
 use Str;
 
@@ -60,40 +60,40 @@ class UsersDatialsController extends Controller
     //Approve Withdrawal 
     public function approveWithdrawal($id)
     {
-        $withdrawal = Withdrawal::findOrFail($id);
+        $Withdrawal = Withdrawal::findOrFail($id);
 
-        if ($withdrawal->status !== 'pending') {
+        if ($Withdrawal->status !== 'pending') {
             return back()->with('error', 'Withdrawal is not pending.');
         }
 
-        // Deduct the withdrawal amount from user's balance
-        $user = $withdrawal->user;
+        // Deduct the Withdrawal amount from user's balance
+        $user = $Withdrawal->user;
         $userBalance = $user->balance;
 
-        if ($userBalance && $userBalance->balance >= $withdrawal->amount) {
-            $userBalance->balance -= $withdrawal->amount;
+        if ($userBalance && $userBalance->balance >= $Withdrawal->amount) {
+            $userBalance->balance -= $Withdrawal->amount;
             $userBalance->save();
 
-            // Update withdrawal status to completed
-            $withdrawal->status = 'complete';
-            $withdrawal->save();
+            // Update Withdrawal status to completed
+            $Withdrawal->status = 'complete';
+            $Withdrawal->save();
 
             return back()->with('success', 'Withdrawal approved successfully.');
         }
 
-        return back()->with('error', 'Insufficient balance for this withdrawal.');
+        return back()->with('error', 'Insufficient balance for this Withdrawal.');
     }
 
     //Delete Deposit
         public function deleteWithdrawal($id)
     {
-        $withdrawal = Withdrawal::findOrFail($id);
+        $Withdrawal = Withdrawal::findOrFail($id);
 
-        if ($withdrawal->status === 'complete') {
-            return back()->with('error', 'Cannot delete a completed withdrawal.');
+        if ($Withdrawal->status === 'complete') {
+            return back()->with('error', 'Cannot delete a completed Withdrawal.');
         }
 
-        $withdrawal->delete();
+        $Withdrawal->delete();
 
         return back()->with('success', 'Withdrawal deleted successfully.');
     }
@@ -101,9 +101,9 @@ class UsersDatialsController extends Controller
     //Withdrawal Feedback
     public function addFeedback(Request $request)
     {
-        $withdrawal = Withdrawal::findOrFail($request->id);
-        $withdrawal->feedback = $request->feedback;
-        $withdrawal->save();
+        $Withdrawal = Withdrawal::findOrFail($request->id);
+        $Withdrawal->feedback = $request->feedback;
+        $Withdrawal->save();
     
         return back()->with('success', 'Feedback added successfully.');
     }

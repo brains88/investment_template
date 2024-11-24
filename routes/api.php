@@ -14,7 +14,7 @@ Route::post('/login', [App\Http\Controllers\auth\loginController::class, 'login'
 Route::post('/user-verification', [App\Http\Controllers\auth\loginController::class, 'activateAccount']);
 Route::post('/password-reset', [App\Http\Controllers\auth\PasswordResetController::class, 'sendResetLinkEmail']);
 Route::post('/passwordreset', [App\Http\Controllers\auth\PasswordResetController::class, 'resetPassword']);// routes/api.php
-Route::post('/logout', [App\Http\Controllers\auth\loginController::class, 'logout'])->name('user.logout');
+Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout']);
 Route::get('password/reset', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm']);
 Route::post('password/email', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendResetLinkEmail']);
 

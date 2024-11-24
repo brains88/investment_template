@@ -50,7 +50,7 @@
             <i class="fa fa-users" :style="{ fontSize:'25px', color:'#ffce28' }"></i> 
           </div>
           <div class="text-box">
-            <span class="text-white" :style="{ fontWeight: '600 !important', fontSize:'40px' }">500</span>
+            <span class="text-white" :style="{ fontWeight: '600 !important', fontSize:'40px' }">27430</span>
             <h4>Registered Users</h4>
           </div>
         </div>
@@ -61,7 +61,7 @@
             <i class="fa fa-globe" :style="{ fontSize:'25px', color:'#ffce28' }"></i> 
           </div>
           <div class="text-box">
-            <span class="text-white" :style="{ fontWeight: '600 !important', fontSize:'40px' }">150</span>
+            <span class="text-white" :style="{ fontWeight: '600 !important', fontSize:'40px' }">250</span>
             <h4>Supported Countries</h4>
           </div>
         </div>
@@ -72,7 +72,7 @@
             <i class="fa fa-money-bill-wave" :style="{ fontSize:'25px', color:'#ffce28' }"></i> 
           </div>
           <div class="text-box">
-            <span class="counter">10000</span>
+            <span class="text-white" :style="{ fontWeight: '600 !important', fontSize:'40px' }">4150</span>
             <h4>Withdrawn Each Month</h4>
           </div>
         </div>
@@ -83,7 +83,7 @@
             <i class="fa fa-chart-line" :style="{ fontSize:'25px', color:'#ffce28' }"></i>
           </div>
           <div class="text-box">
-            <span class="counter">400</span>
+            <span class="text-white" :style="{ fontWeight: '600 !important', fontSize:'40px' }">500</span>
             <h4>Active Investors Daily</h4>
           </div>
         </div>

@@ -61,6 +61,7 @@ export default {
         this.loading = false; 
 
         if (response.data.redirect) {
+          this.successMessage = 'Verification successful! Dashboard loading ....';
            // Use window.location.href to redirect to the Laravel route
            window.location.href = response.data.redirect; // Laravel route will be sent here
         } else {

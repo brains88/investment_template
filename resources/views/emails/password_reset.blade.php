@@ -54,7 +54,7 @@
 <body>
     <div class="container">
     <div class="logo">
-            <img src="https://www.equitifytrades.com/assets/img/logo.jpg" alt="Company Logo">
+            <img src="https://www.equitifytrades.com/assets/img/logo.png" alt="Company Logo">
         </div>
         <div class="header">
             <h1>Password Reset Request</h1>

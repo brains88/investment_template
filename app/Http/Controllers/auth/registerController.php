@@ -13,29 +13,23 @@ use Str;
 
 class RegisterController extends Controller
 {
-    public function register(Request $request) 
-    {
-        $validatedData = $request->validate([
-            'fullname' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'username' => 'required|string|max:255|unique:users,username',
-            'password' => 'required|string|min:8|confirmed',
-            'country' => 'required|string|max:255',
-            'mobile' => 'required|regex:/^\+?\d{8,15}$/|unique:users,mobile',
-            'profileImage' => 'required|image|max:2048',
-        ]);
-    
-        // Generate a six-digit verification code
-        $verificationCode = random_int(100000, 999999);
-    
-        // Handle profile image upload if it exists
-        if ($request->hasFile('profileImage')) {
-            $userImage = $request->file('profileImage');
-            $imagename = Str::uuid() . '.' . $userImage->getClientOriginalExtension();
-            $validatedData['profileImage'] = $imagename;
-        }
-    
-        // Create the user and set the verification code
+
+   public function register(Request $request)
+{
+    $validatedData = $request->validate([
+        'fullname' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'username' => 'required|string|max:255|unique:users,username',
+        'password' => 'required|string|min:8|confirmed',
+        'country' => 'required|string|max:255',
+        'mobile' => 'required|regex:/^\+?\d{8,15}$/|unique:users,mobile',
+    ]);
+
+    $verificationCode = random_int(100000, 999999);
+
+    try {
+        \DB::beginTransaction();
+
         $user = User::create([
             'name' => $validatedData['fullname'],
             'email' => $validatedData['email'],
@@ -43,26 +37,30 @@ class RegisterController extends Controller
             'username' => $validatedData['username'],
             'password' => Hash::make($validatedData['password']),
             'country' => $validatedData['country'],
-            'image' => $validatedData['profileImage'],
-            'verification_code' => $verificationCode, // Save verification code
+            'image' => null, // Set the image field to null
+            'verification_code' => $verificationCode,
         ]);
-    
-        //Store Image in the public folder
-         $userImage->storeAs('profile_images', $imagename, 'public');
-        // Send welcome email with the verification code
-        Mail::to($user->email)->send(new WelcomeMail($user, $verificationCode));
-    
 
-        if (session()->has('referrer')) {
-            $referrer = User::where('username', session()->pull('referrer'))->first();
-    
-            if ($referrer) {
-                // Log the referral (e.g., store in a `referrals` table or update referrer count)
-                $referrer->referrals()->create(['referred_user_id' => $user->id]);
-            }
-        }
-        return response()->json(['message' => 'User registered successfully. A verification code has been sent to your email.'], 201);
+        // Send the welcome email
+        Mail::to($user->email)->send(new WelcomeMail($user, $verificationCode));
+
+        \DB::commit();
+
+        return response()->json(['message' => 'Registration successful. Please check your email for the activation code.']);
+    } catch (\Exception $e) {
+        \DB::rollback();
+
+        Log::error("Registration error: ", [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+
+        return response()->json([
+            'message' => 'Registration failed due to a server error.',
+        ], 500);
     }
+}      
+    
 
 
     public function handleReferral($username)

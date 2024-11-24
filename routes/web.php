@@ -9,8 +9,8 @@ Route::get('/api/checkAdmin', [App\Http\Controllers\auth\authCheckController::cl
 Route::post('/api/register', [App\Http\Controllers\auth\registerController::class, 'register']);
 Route::get('api/register/{username}', [App\Http\Controllers\auth\registerController::class, 'handleReferral'])->name('referral');
 Route::post('/api/login', [App\Http\Controllers\auth\loginController::class, 'login']);
+Route::post('/api/logout', [App\Http\Controllers\auth\loginController::class, 'logout']);
 Route::post('/api/user-verification', [App\Http\Controllers\auth\loginController::class, 'activateAccount']);
-Route::post('/api/logout', [App\Http\Controllers\auth\loginController::class, 'logout'])->name('user.logout');
 Route::get('/api/plans', [App\Http\Controllers\user\investmentController::class, 'index']);
 Route::get('api/password/reset', [App\Http\Controllers\Auth\PasswordResetController::class, 'showLinkRequestForm']);
 Route::get('api/password/reset', [App\Http\Controllers\Auth\PasswordResetController::class, 'showLinkRequestForm']);
@@ -92,8 +92,7 @@ Route::middleware(['auth','user'])->prefix('user')->group(function () {
     Route::post('/profile/update-password', [App\Http\Controllers\user\ProfileController::class, 'updatePassword'])->name('profile.update-password');
     Route::post('/profile/submit-identity', [App\Http\Controllers\user\ProfileController::class, 'submitIdentity'])->name('profile.submit-identity');
     Route::post('/profile/submit-address', [App\Http\Controllers\user\ProfileController::class, 'submitAddress'])->name('profile.submit-address');
-    Route::post('/logout', [App\Http\Controllers\auth\loginController::class, 'logout'])->name('user.logout');
-Route::post('/investment/submit/{plan}', [App\Http\Controllers\user\InvestmentController::class, 'makeInvestment'])->name('investment.submit');
+Route::post('/investment/submit/{plan}', [App\Http\Controllers\user\investmentController::class, 'makeInvestment'])->name('investment.submit');
 
 });
 

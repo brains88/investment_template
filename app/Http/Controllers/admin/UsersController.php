@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
-use App\Models\{User,investment,plan,wallet,Deposit,Balance,withdrawal,transfer,referral};
+use App\Models\{User,Investment,Plan,Wallet,Deposit,Balance,Withdrawal,Transfer,Referral};
 use App\Mail\WelcomeMail;
 use Str;
 
@@ -37,7 +37,7 @@ class UsersController extends Controller
                 $totalWithdrawalAmount = $withdrawals->sum('amount'); 
                 $totalInvestmentAmount = $investments->sum('amount');
                 $totalDepositAmount = $deposits->sum('amount');
-                $totalReferredUsers = $referrals->count();  // Summing the referral amounts
+                $totalReferredUsers = $referrals->count();  // Summing the Referral amounts
             
                 return view('admin.user-details', compact('user','totalDepositAmount', 'totalReferredUsers','totalInvestmentAmount','totalWithdrawalAmount','withdrawals', 'investments', 'deposits', 'referrals', 'transfers'));
             }

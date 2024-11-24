@@ -24,17 +24,18 @@
                                     src="{{ asset('storage/coin/' . $wallet->image_path) }}"
                                     alt="{{ $wallet->coin }}"
                                 >
-                                <button type="button"
-                                    data-id="{{ $wallet->id }}"
-                                    data-name="{{ $wallet->coin }}"
-                                    data-currency="{{ $wallet->network }}"
-                                    data-gateway="{{ strtolower(str_replace(' ', '-', $wallet->coin)) }}"
-                                    data-min_amount="{{ $wallet->min_amount }}" 
-                                    data-max_amount="{{ $wallet->max_amount }}"
-                                    data-address="{{ $wallet->address }}"
-                                    class="gold-btn addFund"
-                                    data-bs-toggle="modal" data-bs-target="#addFundModal">Pay Now
-                                </button>
+                                 <button type="button"
+                                data-id="{{ $wallet->id }}"
+                                data-name="{{ $wallet->coin }}"
+                                data-currency="{{ $wallet->network }}"
+                                data-gateway="{{ strtolower(str_replace(' ', '-', $wallet->coin)) }}"
+                                data-min_amount="{{ $wallet->min_amount }}" 
+                                data-max_amount="{{ $wallet->max_amount }}"
+                                data-address="{{ $wallet->address }}"
+                                class="gold-btn addFund"
+                                data-bs-toggle="modal" data-bs-target="#addFundModal">Pay Now
+                            </button>
+
                             </div>
                         </div>
                     @endforeach
@@ -145,8 +146,8 @@
 $('.addFund').on('click', function () {
     walletId = $(this).data('id');
     gateway = $(this).data('gateway');
-    minAmount = $(this).data('min_amount');
-    maxAmount = $(this).data('max_amount');
+   minAmount = parseFloat($(this).data('min_amount'));
+    maxAmount = parseFloat($(this).data('max_amount'));
     currency = $(this).data('currency');
 
     // Set modal fields with selected wallet details
@@ -166,6 +167,7 @@ $(".submitAmount").on('click', function () {
         $('#alert-container').text(`Amount must be between ${minAmount} and ${maxAmount}.`).addClass('alert alert-danger').show();
         return;
     }
+
 
     // Populate the confirmation modal with the details
     $('#confirm-amount').text(amount);

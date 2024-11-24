@@ -1,6 +1,6 @@
   <!------ sidebar ------->
   <div id="sidebar">
-            <div class="wallet-wrapper">
+            <div class="wallet-wrapper mt-5 pt-5">
             <div class="wallet-box d-none d-lg-block" style="margin-top:80px;">
             <h4>Account Balance</h4>
             <h5>Main Balance <span>${{ $userData->balance->balance ?? 0.00 }}</span></h5>
@@ -102,7 +102,7 @@
                        <!---- user panel ---->
                        <div class="notification-panel user-panel">
                        <button class="dropdown-toggle">
-                            <img src="{{ asset('storage/profile_images/' . $userData->image) }}" class="user-image" alt="user img" />
+                       <img src="{{ asset($userData->image ?: 'assets/img/profile-default.jpg') }}" class="user-image" alt="{{ $userData->name }}" />
                         </button>
 
                             <ul class="notification-dropdown user-dropdown">
@@ -131,7 +131,7 @@
                                         <img src="https://www.equitytradeslc.com/assets/themes/deepblack//img/icon/log-out.png" alt="Logout"/>
                                         <span class="golden-text">Logout</span>
                                     </a>
-                                    <form id="logout-form" action="https://www.equitytradeslc.com/logout" method="POST" class="d-none">
+                                    <form id="logout-form" action="{{ url('/') }}" method="POST" class="d-none">
                                         <input type="hidden" name="_token" value="DALvAApQxVDTCi5D8Z1R0zerqJefue8Itw015cIl">                                    </form>
                                 </li>
                             </ul>

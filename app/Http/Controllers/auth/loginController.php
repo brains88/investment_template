@@ -18,7 +18,7 @@ class LoginController extends Controller
             $user = Auth::user();
             
             // Check if the user is unverified
-            if ($user->verification === 'unverified') {
+            if ($user->status === 'unverified') {
                 Auth::logout();
                 return response()->json([
                     'message' => 'Your account is not verified. Please activate your account.',

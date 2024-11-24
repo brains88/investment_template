@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
-use App\Models\{User,investment,plan,wallet,Deposit,Balance,withdrawal,referral};
+use App\Models\{User,Investment,Plan,Wallet,Deposit,Balance,Withdrawal,Referral};
 use App\Mail\WelcomeMail;
 use Str;
 use Auth;

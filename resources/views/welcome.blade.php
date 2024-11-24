@@ -41,6 +41,7 @@
 <meta name="robots" content="index, follow" />
 <meta name="author" content="Equitify Trades" />
 <meta name="theme-color" content="#0044cc" />
+<script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
 
         <!--Favicon-->
         <link rel="shortcut icon" type="image/png" href="assets/img/logo.png">

@@ -112,20 +112,36 @@ export default {
     }
 
     axios.post('/api/login', { email: this.email, password: this.password })
-        .then(response => {
-            if (response.data && response.data.message === 'Login successful') {
-                this.successMessage = response.data.message;
-                window.location.href = response.data.redirect; // Laravel route will be sent here
-            } else {
-                this.errorMessage = response.data.message || 'Login failed. Please try again.';
-            }
-        })
-        .catch(error => {
-            this.errorMessage = error.response ? error.response.data.message : 'Login failed.';
-        })
-        .finally(() => {
-            this.loading = false;
-        });
+    .then(response => {
+        if (response.data && response.data.message === 'Login successful') {
+            this.successMessage = response.data.message;
+            window.location.href = response.data.redirect; // Laravel route will be sent here
+        } else {
+            this.errorMessage = response.data.message || 'Login failed. Please try again.';
+        }
+    })
+    .catch(error => {
+        if (
+            error.response &&
+            error.response.data &&
+            error.response.data.message === 'Your account is not verified. Please activate your account'
+        ) {
+            this.errorMessage = error.response.data.message;
+
+            // Redirect to user verification after 2 seconds
+            setTimeout(() => {
+                this.$router.push('/user-verification');
+            }, 2000);
+        } else {
+            this.errorMessage = error.response
+                ? error.response.data.message
+                : 'Login failed.';
+        }
+    })
+    .finally(() => {
+        this.loading = false;
+    });
+
 },
 
 

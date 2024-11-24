@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
-use App\Models\{User,investment,plan,balance};
+use App\Models\{User,Investment,Plan,Wallet,Deposit,Balance,Withdrawal,Referral};
 use App\Mail\WelcomeMail;
 use Str;
 class investmentController extends Controller

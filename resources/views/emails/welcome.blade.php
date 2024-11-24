@@ -24,7 +24,7 @@
             margin-bottom: 20px;
         }
         .logo img {
-            max-width: 150px;
+            max-width: 200px;
         }
         .details {
             margin: 20px 0;
@@ -40,10 +40,10 @@
 <body>
     <div class="container">
         <div class="logo">
-            <img src="https://www.equitifytrades.com/assets/img/logo.jpg" alt="Company Logo">
+            <img src="https://www.equitifytrades.com/assets/img/logo.png" alt="Company Logo">
         </div>
         <h2>Verification Code</h2>
-        <h1>Welcome to Our Platform, {{ $name }}!</h1>
+        <h1>Welcome to Equitify Trades</h1>
             <p>Thank you for signing up. Please use the following code to verify your account:</p>
             <h3>{{ $code }}</h3>
             <p>We look forward to serving you.</p>
