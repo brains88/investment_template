@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log; // Import the Log facade
 use App\Models\{User,Investment,Plan,Wallet,Deposit,Balance,Withdrawal,Transfer,Referral};
 use App\Mail\WelcomeMail;
 use Str;
@@ -108,5 +109,76 @@ class UsersDatialsController extends Controller
         return back()->with('success', 'Feedback added successfully.');
     }
     
+    //Send Activation Mail
+    public function sendActivationEmail($id)
+    {
+        Log::info('Send Activation Email hit for user ID: ' . $id);
+    
+        $user = User::findOrFail($id);
+        $verificationCode = $user->verification_code;
+    
+        try {
+            // Simulate email sending for debugging
+            Log::info('Sending email to: ' . $user->email);
+    
+            
+             Mail::to($user->email)->send(new WelcomeMail($user, $verificationCode));
+    
+            return response()->json(['message' => 'Activation email sent successfully!'], 200);
+        } catch (\Exception $e) {
+            Log::error('Failed to send email for user ID ' . $id . ': ' . $e->getMessage());
+            return response()->json(['message' => 'Failed to send activation email. Please try again.'], 500);
+        }
+    }
+    
 
+    //Adjust the user balance
+
+    public function adjustBalance(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'action' => 'required|in:increment,decrement',
+            'user_id' => 'required|integer|exists:users,id',
+            'amount' => 'required|numeric|min:0',
+        ]);
+    
+        // Find the user
+        $user = User::find($request->user_id);
+    
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+    
+        // Access the related Balance model or create one if it doesn't exist
+        $balance = $user->balance;
+    
+        if (!$balance) {
+            // Create a new balance record with default values
+            $balance = $user->balance()->create([
+                'user_id' => $user->id,
+                'balance' => 0,
+                'interest' => null, // Set interest to null
+            ]);
+        }
+    
+        // Check for sufficient balance if action is decrement
+        if ($request->action === 'decrement' && $request->amount > $balance->balance) {
+            return response()->json(['message' => 'Insufficient balance.'], 400); // 400 Bad Request
+        }
+    
+        // Adjust the balance
+        if ($request->action === 'increment') {
+            $balance->balance += $request->amount;
+        } elseif ($request->action === 'decrement') {
+            $balance->balance -= $request->amount;
+        }
+    
+        // Save the updated balance
+        $balance->save();
+    
+        return response()->json(['message' => 'Balance adjusted successfully.']);
+    }
+    
+    
 }

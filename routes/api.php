@@ -17,6 +17,7 @@ Route::post('/passwordreset', [App\Http\Controllers\auth\PasswordResetController
 Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout']);
 Route::get('password/reset', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm']);
 Route::post('password/email', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendResetLinkEmail']);
+Route::post('contact', [App\Http\Controllers\frontend\ContactController::class, 'store']);
 
 //User Routes
 Route::get('/user/profile', [App\Http\Controllers\user\DashboardController::class, 'UserProfile']);

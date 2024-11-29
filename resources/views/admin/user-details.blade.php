@@ -5,6 +5,7 @@
     @include('layout.adminnavbar') <!-- User Navbar -->
         <!-- Admin Dashboard -->
 
+
         <section class="statistic-section mt-5 pt-5 pb-0">
             <div class="container-fluid">
             <div class="row">
@@ -14,6 +15,80 @@
                         </div>
                     </div>
                 </div>
+<!-- Activation button, increament, decreament -->
+
+<!-- Admin Actions -->
+        <!-- Admin Actions -->
+        <div class="row">
+            <!-- Send Activation Email Button -->
+            <meta name="csrf-token" content="{{ csrf_token() }}">
+
+        <div class="col-md-4 mb-2">
+            <form id="sendActivationEmailForm-{{ $user->id }}" method="POST" action="{{ route('admin.activation-email', $user->id) }}">
+                @csrf
+                <button type="submit" class="btn btn-primary w-100">
+                    <span id="sendEmailSpinner-{{ $user->id }}" class="spinner-border spinner-border-sm d-none"></span>
+                    Send Activation Email
+                </button>
+            </form>
+        </div>
+
+
+            <!-- Increment Balance Button -->
+            <div class="col-md-4 mb-2">
+                <button class="btn btn-success w-100" onclick="showModal('increment', {{ $user->id }})">
+                    Increment Balance
+                </button>
+            </div>
+
+            <!-- Decrement Balance Button -->
+            <div class="col-md-4 mb-2">
+                <button class="btn btn-danger w-100" onclick="showModal('decrement', {{ $user->id }})">
+                    Decrement Balance
+                </button>
+            </div>
+        </div>
+
+               <!-- Message Alert -->
+<div class="container mt-3">
+    <div id="alert-container" class="mt-3"></div>
+</div>
+<!-- The end of Message Alert -->
+<!-- Modal for Increment/Decrement -->
+<!-- Adjust Balance Modal -->
+<div class="modal fade" id="adjustModal" tabindex="-1" aria-labelledby="adjustModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <form id="adjustBalanceForm" method="POST" action="{{ route('admin.adjust-balance') }}">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adjustModalLabel">Adjust Balance</h5>
+                    <button type="button" data-bs-dismiss="modal" class="btn-close" aria-label="Close">
+                            <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/cross.png" alt="modal dismiss" />
+                        </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="adjustAction" name="action">
+                    <input type="hidden" id="userId" name="user_id">
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" id="amount" name="amount" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn gold-btn">
+                        <span class="spinner-border spinner-border-sm d-none" id="adjustSpinner"></span>
+                        Submit
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+            <!-- The end of Activation button, increament, decreament -->
                 <div class="row">
                     <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
                         <div class="box">
@@ -486,32 +561,16 @@
 
         @include('layout.footer') <!-- Footer Component -->
         <script>
-    document.querySelectorAll('button[type="submit"]').forEach(button => {
-        button.addEventListener('click', function () {
-            const spinner = this.querySelector('.spinner-border');
-            if (spinner) {
-                spinner.classList.remove('d-none');
-            }
-        });
-    });
 
-    document.querySelectorAll('button[type="submit"]').forEach(button => {
-        button.addEventListener('click', function () {
-            const spinner = this.querySelector('.spinner-border');
-            if (spinner) {
-                spinner.classList.remove('d-none');
-            }
-        });
-    });
-
-
-    // Populate Feedback Modal
-    document.querySelectorAll('.feedback-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            document.getElementById('feedback-withdrawal-id').value = this.dataset.id;
-            document.getElementById('admin-feedback').value = this.dataset.feedback || '';
-        });
-    });
+    // Show Alert
+    function showAlert(message, type) {
+    const alertContainer = document.getElementById('alert-container');
+    alertContainer.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+}
 
     // Set Delete Form Action
     document.querySelectorAll('.delete-btn').forEach(button => {
@@ -569,5 +628,144 @@
         }, 1000);
     });
 });
+// Show Alert
+function showAlert(message, type) {
+    const alertContainer = document.getElementById('alert-container');
+    alertContainer.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+}
+
+// For Adjust Balance
+function showModal(action, userId) {
+    // Set action and user ID in hidden inputs
+    document.getElementById('adjustAction').value = action;
+    document.getElementById('userId').value = userId;
+
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('adjustModal'));
+    modal.show();
+}
+
+// Handle form submission via AJAX
+document.addEventListener('DOMContentLoaded', function () {
+    // Add event listener to the form
+    const adjustBalanceForm = document.getElementById('adjustBalanceForm');
+    adjustBalanceForm.addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        const action = document.getElementById('adjustAction').value;
+        const userId = document.getElementById('userId').value;
+        const amount = document.getElementById('amount').value;
+        const spinner = document.getElementById('adjustSpinner');
+
+        // Show spinner
+        spinner.classList.remove('d-none');
+
+        // Prepare the data
+        const formData = {
+            action: action,
+            user_id: userId,
+            amount: amount,
+        };
+
+        // Send AJAX request
+        fetch('{{ route('admin.adjust-balance') }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+            .then(response => {
+                spinner.classList.add('d-none'); // Hide spinner
+                if (!response.ok) throw response;
+                return response.json();
+            })
+            .then(data => {
+                // Show success alert
+                showAlert(data.message || 'Balance adjusted successfully!', 'success');
+
+                // Hide the modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('adjustModal'));
+                modal.hide();
+
+                // Optionally refresh part of the page or update the UI
+                console.log(data);
+            })
+            .catch(async error => {
+                spinner.classList.add('d-none'); // Hide spinner
+                const errorData = await error.json();
+                const errorMessage = errorData.message || 'An error occurred. Please try again.';
+                showAlert(errorMessage, 'danger');
+            });
+    });
+});
+
+
+function showAlert(message, type) {
+    const alertContainer = document.getElementById('alert-container');
+    const alertDiv = document.createElement('div');
+
+    // Add classes for Bootstrap alert styles
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.role = 'alert';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+
+    // Append the alert to the container
+    alertContainer.appendChild(alertDiv);
+
+    // Automatically remove the alert after 5 seconds
+    setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => alertDiv.remove(), 150); // Extra delay for smooth fade-out
+    }, 5000);
+}
+
+
+
+// For Sending Activation Email
+document.querySelectorAll('[id^="sendActivationEmailForm-"]').forEach(form => {
+    form.addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        const userId = this.getAttribute('id').split('-')[1]; // Extract user ID
+        const spinner = document.getElementById(`sendEmailSpinner-${userId}`);
+        const formAction = this.action;
+
+        spinner.classList.remove('d-none'); // Show spinner
+
+        // Send the fetch request
+        fetch(formAction, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content, // Add CSRF token
+                'Content-Type': 'application/json', // Ensure JSON data is sent
+            },
+            body: JSON.stringify({ user_id: userId }) // Send JSON body
+        })
+        .then(response => {
+            if (!response.ok) throw response; // Handle non-200 responses
+            return response.json();
+        })
+        .then(data => {
+            spinner.classList.add('d-none'); // Hide spinner
+            showAlert(data.message || 'Activation email sent successfully!', 'success');
+        })
+        .catch(async error => {
+            spinner.classList.add('d-none'); // Hide spinner
+            const response = await error.json();
+            const message = response.message || 'Failed to send activation email. Please try again.';
+            showAlert(message, 'danger');
+        });
+    });
+});
+
 </script>
 </body>

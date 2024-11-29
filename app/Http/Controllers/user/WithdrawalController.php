@@ -21,9 +21,9 @@ class WithdrawalController extends Controller
     {
     
         $userData = auth()->user();
-    
+        $balance= Balance::where('user_id', $userData->id)->first();
         // Return the view with the plans and user data
-        return view('user.payout', compact('userData'));
+        return view('user.payout', compact('userData', 'balance'));
     }
 
     public function getUserBalance(Request $request)
@@ -49,6 +49,7 @@ public function submitWithdrawal(Request $request)
     $validated = $request->validate([
         'amount' => 'required|numeric|min:1',
         'method' => 'required|in:crypto,bank,zelle,paypal',
+        'account' => 'required|in:main,interest',
     ]);
 
     // Dynamically validate based on withdrawal method
@@ -56,13 +57,28 @@ public function submitWithdrawal(Request $request)
 
     // Check user's balance
     $user = $request->user();
-    $balance = Balance::where('user_id', $user->id)->value('balance');
+    $balanceMain = Balance::where('user_id', $user->id)->value('balance');
+    $balanceInterest = Balance::where('user_id', $user->id)->value('interest');
 
-    if ($balance === null || $validated['amount'] > $balance) {
-        return response()->json(['error' => 'Insufficient balance, Please fund your account'], 400);
+    if ($validated['account'] === 'main') {
+        if ($balanceMain === null || $validated['amount'] > $balanceMain) {
+            return response()->json([
+                'errors' => [
+                    'account' => ['Insufficient main balance. Please fund your account.'],
+                ]
+            ], 422);
+        }
+    } elseif ($validated['account'] === 'interest') {
+        if ($balanceInterest === null || $validated['amount'] > $balanceInterest) {
+            return response()->json([
+                'errors' => [
+                    'account' => ['Insufficient interest balance. Please fund your account.'],
+                ]
+            ], 422);
+        }
     }
 
-    // Generate a unique transaction ID
+    // Generate transaction ID
     $transactionId = $this->generateTransactionId();
 
     try {
@@ -83,14 +99,13 @@ public function submitWithdrawal(Request $request)
             'coin_type' => $request->input('coin_type'),
         ]);
 
-        // Deduct the amount from user's balance
-        //Balance::where('user_id', $user->id)->decrement('balance', $validated['amount']);
-
-        // Attempt to send email notification
+            // Deduct the amount from user's balance
+            //Balance::where('user_id', $user->id)->decrement('balance', $validated['amount']);
+                
+        // Send email notification
         try {
             Mail::to($user->email)->send(new WithdrawalSubmittedMail($transactionId, $validated['amount']));
         } catch (\Exception $e) {
-            // Log email sending error, but continue the process
             Log::error('Email failed to send for withdrawal', [
                 'user_id' => $user->id,
                 'transaction_id' => $transactionId,
@@ -98,57 +113,53 @@ public function submitWithdrawal(Request $request)
             ]);
         }
 
-        // Return success response
         return response()->json([
             'message' => 'Your withdrawal is being processed.',
             'transaction_number' => $transactionId,
         ], 200);
 
     } catch (\Illuminate\Database\QueryException $e) {
-        // Handle database-related errors
         return response()->json([
             'error' => 'An error occurred while processing your withdrawal. Please try again.',
         ], 500);
     } catch (\Exception $e) {
-        // Log general exceptions
         Log::error('Error in Withdrawal:', ['message' => $e->getMessage()]);
-        // Handle any other exceptions
         return response()->json([
             'error' => 'Something went wrong. Please contact support.',
         ], 500);
     }
 }
 
+private function validateMethodFields(string $method, Request $request)
+{
+    $rules = match ($method) {
+        'crypto' => [
+            'wallet_address' => 'required|string|max:255',
+            'network' => 'required|string|max:255',
+            'coin_type' => 'required|string|max:255',
+        ],
+        'bank' => [
+            'bank_name' => 'required|string|max:255',
+            'bank_account_number' => 'required|string|max:20',
+            'routing_number' => 'required|string|max:20',
+            'address' => 'required|string|max:255',
+        ],
+        'zelle' => [
+            'zelleEmail' => 'required|email|max:255',
+        ],
+        'paypal' => [
+            'paypalEmail' => 'required|email|max:255',
+        ],
+        default => [],
+    };
 
-
-    private function validateMethodFields(string $method, Request $request)
-    {
-        $rules = match ($method) {
-            'crypto' => [
-                'wallet_address' => 'required|string|max:255',
-                'network' => 'required|string|max:255',
-                'coin_type' => 'required|string|max:255',
-            ],
-            'bank' => [
-                'bank_name' => 'required|string|max:255',
-                'bank_account_number' => 'required|string|max:20',
-                'routing_number' => 'required|string|max:20',
-                'address' => 'required|string|max:255',
-            ],
-            'zelle' => [
-                'zelleEmail' => 'required|email|max:255',
-            ],
-            'paypal' => [
-                'paypalEmail' => 'required|email|max:255',
-            ],
-            default => [],
-        };
-
-        $request->validate($rules);
-    }
-
-    private function generateTransactionId()
-    {
-        return random_int(1000000000, 9999999999);
-    }
+    $request->validate($rules);
 }
+
+
+            private function generateTransactionId()
+            {
+                return random_int(1000000000, 9999999999);
+            }
+}
+    

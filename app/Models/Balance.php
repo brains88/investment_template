@@ -13,7 +13,7 @@ class Balance extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'balance'];
+    protected $fillable = ['user_id', 'balance','interest'];
 
     // Relationship with User model
     public function user()

@@ -78,13 +78,23 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Payout Form</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" data-bs-dismiss="modal" class="btn-close" aria-label="Close">
+                 <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/cross.png" alt="modal dismiss" />
+                 </button>
             </div>
             <div class="modal-body">
                         <form id="payoutForm" action="{{ route('payout.submit') }}" method="POST">
                     @csrf
                     <input type="hidden" name="method" id="method" value="">
+                    <div class="form-group">
+                        <label for="account">Choose Account</label>
+                        <select id="account" name="account" class="form-control">
+                            <option value="main">Main Balance - ${{ $balance->balance ?? 0 }}</option>
+                            <option value="interest">Interest Balance - ${{ $balance->interest ?? 0 }}</option>
+                        </select>
+                    </div>
 
+                    
                     <div class="form-group">
                         <label for="amount">Amount</label>
                         <input type="number" class="form-control" id="amount" name="amount" min="5" required>
@@ -144,16 +154,12 @@
                     </div>
 
                     <!-- Bootstrap Alert Message -->
+                   <!-- Single Alert Message -->
                     <div id="alertMessage" class="alert alert-info" role="alert" style="display: none;">
                         Processing your request...
                     </div>
                 </form>
 
-
-                <!-- Bootstrap Alert Message -->
-                <div id="alertMessage" class="alert alert-info" role="alert" style="display: none;">
-                    Processing your request...
-                </div>
             </div>
         </div>
     </div>
@@ -181,24 +187,20 @@
 }
 
 document.getElementById("payoutForm").addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
 
-    // UI Elements
     const spinner = document.getElementById("spinner");
     const alertMessage = document.getElementById("alertMessage");
     const processButton = document.getElementById("processButton");
 
-    // Reset UI
     spinner.style.display = "inline-block";
     alertMessage.style.display = "block";
     alertMessage.className = "alert alert-info";
     alertMessage.textContent = "Processing your request...";
     processButton.disabled = true;
 
-    // Prepare the form data
     const formData = new FormData(this);
 
-    // AJAX Request
     fetch("{{ route('payout.submit') }}", {
         method: "POST",
         headers: {
@@ -209,32 +211,28 @@ document.getElementById("payoutForm").addEventListener("submit", function (event
     })
         .then((response) => {
             if (!response.ok) {
-                // If response is 422 (Unprocessable Content), return JSON error details
                 if (response.status === 422) {
                     return response.json().then((data) => {
                         throw data.errors;
                     });
                 }
-                
                 throw new Error("Network response was not ok");
             }
             return response.json();
         })
         .then((data) => {
-            // Handle success response
             alertMessage.className = "alert alert-success";
             alertMessage.textContent = data.message || "Payout request processed successfully!";
             window.location.href = '/user/payout-history';
         })
         .catch((errors) => {
+            console.log("Errors received:", errors); // Debugging
             if (typeof errors === "object") {
-                // Show validation error messages
                 alertMessage.className = "alert alert-danger";
                 alertMessage.textContent = Object.values(errors)
-                    .map((msgArray) => msgArray.join(", "))
-                    .join("\n");
+                    .flat()
+                    .join(", ");
             } else {
-                console.error("Fetch error:", errors);
                 alertMessage.className = "alert alert-danger";
                 alertMessage.textContent = "There was an error processing the transaction.";
             }
@@ -244,6 +242,7 @@ document.getElementById("payoutForm").addEventListener("submit", function (event
             processButton.disabled = false;
         });
 });
+
 ;
 
 </script>

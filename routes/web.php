@@ -15,6 +15,7 @@ Route::get('/api/plans', [App\Http\Controllers\user\investmentController::class,
 Route::get('api/password/reset', [App\Http\Controllers\Auth\PasswordResetController::class, 'showLinkRequestForm']);
 Route::get('api/password/reset', [App\Http\Controllers\Auth\PasswordResetController::class, 'showLinkRequestForm']);
 Route::post('api/password/email', [App\Http\Controllers\Auth\PasswordResetController::class, 'sendResetLinkEmail']);
+Route::post('api/contact', [App\Http\Controllers\frontend\ContactController::class, 'store']);
 
 
 //Admin Routes
@@ -68,6 +69,8 @@ Route::middleware(['auth','admin'])->prefix('admin')->group(function () {
     Route::get('/payout-history', [App\Http\Controllers\admin\WithdrawalController::class, 'getWithdrawals'])->name('admin.payout-history');
     Route::get('/profile', [App\Http\Controllers\admin\ProfileController::class, 'index'])->name('admin.profile');
     Route::post('/admin/profile/update-password', [App\Http\Controllers\admin\ProfileController::class, 'updatePassword'])->name('admin.profile.update-password');
+    Route::post('/admin/send-activation-email/{id}', [App\Http\Controllers\admin\UsersDatialsController::class, 'sendActivationEmail'])->name('admin.activation-email');
+    Route::post('/adjust-balance', [App\Http\Controllers\admin\UsersDatialsController::class, 'adjustBalance'])->name('admin.adjust-balance');
 });
 
 //User Routes
