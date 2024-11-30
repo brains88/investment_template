@@ -761,7 +761,7 @@
                                 <td>{{ withdrawal.amount }}</td>
                                 <td>USD</td>
                                  
-                                <td>{{ formatTimeAgo(deposit.created_at) }}</td>
+                                <td>{{ formatTimeAgo(withdrawal.created_at) }}</td>
                                
                                 </tr>
                             </tbody>

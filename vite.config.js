@@ -10,4 +10,5 @@ export default defineConfig({
         }),
         vue(),
     ],
+    base: '/', // Assets will be served from the root
 });

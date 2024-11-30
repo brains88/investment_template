@@ -39,6 +39,7 @@ class RegisterController extends Controller
             'country' => $validatedData['country'],
             'image' => null, // Set the image field to null
             'verification_code' => $verificationCode,
+            
         ]);
 
         // Send the welcome email
