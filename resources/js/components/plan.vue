@@ -26,7 +26,7 @@
                     <p class="card-text text-center">
                       <span class="badge bg-success p-3 mb-3"><b>{{ plan.interest }}%</b></span>
                       <br />
-                      <span>Daily For {{ plan.duration }} day(s)</span>
+                      <span>Daily For {{ plan.duration }} Month(s)</span>
                     </p>
                     <div class="min-max-info">
                       <p class="text-muted">
