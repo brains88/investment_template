@@ -27,6 +27,7 @@ Route::middleware(['auth','admin'])->prefix('admin')->group(function () {
     Route::post('users/{user}/ban', [App\Http\Controllers\admin\UsersController::class, 'banUser'])->name('user.ban');
     Route::post('users/{user}/unban', [App\Http\Controllers\admin\UsersController::class, 'unbanUser'])->name('user.unban');
     Route::delete('users/{user}', [App\Http\Controllers\admin\UsersController::class, 'deleteUser'])->name('user.delete');
+    Route::post('/user/email/{id}', [App\Http\Controllers\admin\UsersController::class, 'sendEmail'])->name('user.email');
     Route::post('/transactions/{id}/approve', [App\Http\Controllers\admin\UsersDatialsController::class, 'approveDeposit'])->name('transactions.approve');
     Route::delete('/transactions/{id}', [App\Http\Controllers\admin\UsersDatialsController::class, 'deleteDeposit'])->name('transactions.delete');
     Route::post('/withdrawals/{id}/approve', [App\Http\Controllers\admin\UsersDatialsController::class, 'approveWithdrawal'])->name('withdrawals.approve');
@@ -71,6 +72,7 @@ Route::middleware(['auth','admin'])->prefix('admin')->group(function () {
     Route::post('/admin/profile/update-password', [App\Http\Controllers\admin\ProfileController::class, 'updatePassword'])->name('admin.profile.update-password');
     Route::post('/admin/send-activation-email/{id}', [App\Http\Controllers\admin\UsersDatialsController::class, 'sendActivationEmail'])->name('admin.activation-email');
     Route::post('/adjust-balance', [App\Http\Controllers\admin\UsersDatialsController::class, 'adjustBalance'])->name('admin.adjust-balance');
+    
 });
 
 //User Routes

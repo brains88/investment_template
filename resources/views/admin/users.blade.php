@@ -36,26 +36,31 @@
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->mobile ?? 'N/A' }}</td>
                                         <td>{{ \Carbon\Carbon::parse($user->created_at)->format('d M Y h:i A') }}</td>
-                                        <td class="d-flex">
+                                        <td class="d-flex gap-2">
                                             <!-- View Button -->
                                             <a href="{{ route('user.view', $user->id) }}" class="btn btn-info" title="View">
-                                                <i class="fas fa-eye ml-2"></i>
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            
+                                            <!-- Button to Open Modal -->
+                                            <a data-bs-toggle="modal" data-bs-target="#emailModal{{ $user->id }}" class="btn btn-info" style="background-color: green; color: #fff; border-color: green;">
+                                                <i class="fas fa-envelope"></i>
                                             </a>
 
+                                            <!-- End Of Emailing Codes -->
                                             @if($user->account === 'active')
                                                 <!-- Ban Button -->
-                                                <button class="btn btn-warning ml-2" data-bs-toggle="modal" data-bs-target="#banModal{{ $user->id }}" title="Ban">
-                                                    <i class="fas fa-ban ml-2"></i>
+                                                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#banModal{{ $user->id }}" title="Ban">
+                                                    <i class="fas fa-ban"></i>
                                                 </button>
                                             @else
                                                 <!-- Unban Button -->
                                                 <form action="{{ route('user.unban', $user->id) }}" method="POST" style="display:inline;" id="banForm{{ $user->id }}">
                                                     @csrf
                                                     @method('post')
-                                                    <button type="submit" class="btn btn-success ml-3" id="banButton{{ $user->id }}">
+                                                    <button type="submit" class="btn btn-success" id="banButton{{ $user->id }}">
                                                         Unban
-                                                        <!-- Spinner Icon (Initially Hidden) -->
-                                                        <i class="fas fa-spinner fa-spin ml-2 d-none" id="spinner{{ $user->id }}"></i>
+                                                        <i class="fas fa-spinner fa-spin d-none" id="spinner{{ $user->id }}"></i>
                                                     </button>
                                                 </form>
                                             @endif
@@ -65,12 +70,47 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <!-- Button to trigger modal -->
-                                                <button type="button" class="btn btn-danger ml-2" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $user->id }}">
-                                                    <i class="fas fa-trash ml-2"></i>
+                                                <button type="button" class="btn btn-danger" title="Delete" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $user->id }}">
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
                                         </td>
+
                                     </tr>
+
+                                     <!-- Ban Modal -->
+                                     <div class="modal fade" id="banModal{{ $user->id }}" tabindex="-1" aria-labelledby="banModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="banModalLabel">Ban User</h5>
+                                                    <button type="button" data-bs-dismiss="modal" class="btn-close" aria-label="Close"></button>
+                                                </div>
+                                                <form action="{{ route('user.email', $user->id) }}" method="POST">
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label for="ban_reason" class="form-label">Reason for Banning</label>
+                                                            <textarea id="ban_reason" name="ban_reason" class="form-control" required></textarea>
+                                                        </div>
+                                                    </div>
+                                                    @if(session('message'))
+                                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                                            {{ session('message') }}
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                        </div>
+                                                    @endif
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-warning" id="banButton{{ $user->id }}">
+                                                            Ban User
+                                                            <span class="spinner-border spinner-border-sm d-none" id="spinner{{ $user->id }}" role="status" aria-hidden="true"></span>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <!-- Ban Modal -->
                                     <div class="modal fade" id="banModal{{ $user->id }}" tabindex="-1" aria-labelledby="banModalLabel" aria-hidden="true">
@@ -125,6 +165,51 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Send Mail Modal -->
+                                     <!-- Session Success and Error Alerts -->
+                                @if(session('success'))
+                                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                        {{ session('success') }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                @endif
+                                @if(session('error'))
+                                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        {{ session('error') }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                @endif
+                                 <!-- Email Modal -->
+                                <div class="modal fade" id="emailModal{{ $user->id }}" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Email User</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{ route('user.email', $user->id) }}" method="POST" id="emailForm{{ $user->id }}" onsubmit="handleEmailSubmit({{ $user->id }})">
+                                                @csrf
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label for="email_subject{{ $user->id }}">Subject</label>
+                                                        <input type="text" class="form-control" id="email_subject{{ $user->id }}" name="email_subject" placeholder="Enter email subject" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="email_content{{ $user->id }}">Email Content</label>
+                                                        <textarea class="form-control" id="email_content{{ $user->id }}" name="email_content" rows="5" placeholder="Enter email content" required></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary" id="sendButton{{ $user->id }}">Send Email</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- The End of Email -->
                                 @empty
                                     <tr>
                                         <td colspan="6" class="text-center">No users found.</td>
@@ -145,6 +230,7 @@
 </div>
 </div>
 </div>
+
 
 @include('layout.footer') 
 
@@ -178,6 +264,19 @@
             };
         });
     });
+
+    //send email
+    function handleEmailSubmit(userId) {
+    // Get the send button
+    const sendButton = document.getElementById(`sendButton${userId}`);
+    
+    // Disable the button and change its text to "Sending..."
+    sendButton.disabled = true;
+    sendButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...`;
+}
+
+
+
 </script>
 
 </body>
