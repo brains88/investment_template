@@ -1,13 +1,12 @@
 <?php
-
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\DB;
 use App\Models\{User,Investment,Plan,Wallet,Deposit,Balance,Withdrawal,Transfer,Referral};
 use App\Mail\WelcomeMail;
 use Str;
@@ -79,8 +78,45 @@ class UsersController extends Controller
 
             return redirect()->route('admin.users')->with('success', 'User has been deleted.');
         }
+        
+     public function sendEmail(Request $request, $id)
+{
+    $request->validate([
+        'email_subject' => 'required|string|max:255',
+        'email_content' => 'required|string',
+    ]);
 
-      
+    $user = User::findOrFail($id);
+    $logoUrl = "https://www.equitifytrades.com/assets/img/logo.png";
+
+    // Build the email body
+    $emailBody = "
+        <div style='font-family: Arial, sans-serif;'>
+            <div style='text-align: center; margin-bottom: 20px;'>
+                <img src='{$logoUrl}' alt='Company Logo' style='max-width: 150px; height: auto;'>
+            </div>
+            <h3>Hello {$user->name},</h3>
+            <div>
+                " . nl2br(e($request->email_content)) . "
+            </div>
+        </div>
+    ";
+
+    try {
+        Mail::send([], [], function ($message) use ($request, $user, $emailBody) {
+            $message->to($user->email)
+                ->subject($request->email_subject)
+                ->html($emailBody);
+        });
+
+        return redirect()->back()->with('success', 'Email sent successfully to ' . $user->name);
+    } catch (\Exception $e) {
+        // Log the detailed error
+        \Log::error('Email sending failed: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Failed to send email. Please try again.');
+    }
+}
+   /*
         //Send Mail to the user
         public function sendEmail(Request $request, $id)
         {
@@ -119,9 +155,7 @@ class UsersController extends Controller
                 return redirect()->back()->with('error', 'Failed to send email. Please try again.');
             }
         }
-        
-        
-        
 
+      */
 
 }

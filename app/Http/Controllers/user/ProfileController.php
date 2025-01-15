@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use App\Models\{User,investment,plan,wallet,Deposit,Referral};
-
+use Str;
 class ProfileController extends Controller
 {
     //
@@ -38,9 +38,8 @@ class ProfileController extends Controller
             }
     
             // Save the new image
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->storeAs('profile_images', $imageName, 'public');
-            $user->image = $imageName;
+            $request->image->storeAs('profile_images', $request->image, 'public');
+            $user->image = $request->image;
             $user->save();
     
             return response()->json(['message' => 'Profile image updated successfully.']);

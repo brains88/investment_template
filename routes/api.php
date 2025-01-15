@@ -2,7 +2,7 @@
 use Illuminate\Support\Facades\Route;
 
 //Public Routes
-Route::get('/home', [ App\Http\Controllers\frontend\HomeController::class, 'index']);
+Route::get('/home', [App\Http\Controllers\frontend\HomeController::class, 'index']);
 Route::get('/transactions/latest', [App\Http\Controllers\frontend\HomeController::class, 'getLatestTransactions']);
 
 //Auth Routes
@@ -13,7 +13,7 @@ Route::post('/register', [App\Http\Controllers\auth\registerController::class, '
 Route::post('/login', [App\Http\Controllers\auth\loginController::class, 'login']);
 Route::post('/user-verification', [App\Http\Controllers\auth\loginController::class, 'activateAccount']);
 Route::post('/password-reset', [App\Http\Controllers\auth\PasswordResetController::class, 'sendResetLinkEmail']);
-Route::post('/passwordreset', [App\Http\Controllers\auth\PasswordResetController::class, 'resetPassword']);// routes/api.php
+Route::post('/passwordreset', [App\Http\Controllers\auth\PasswordResetController::class, 'resetPassword']); // routes/api.php
 Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout']);
 Route::get('password/reset', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm']);
 Route::post('password/email', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendResetLinkEmail']);
@@ -35,4 +35,3 @@ Route::post('/user/withdraw', [App\Http\Controllers\user\WithdrawalController::c
 Route::get('/get-referral', function () {
     return response()->json(['referrer' => session('referrer')]);
 });
-

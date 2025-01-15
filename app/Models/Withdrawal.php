@@ -25,6 +25,7 @@ class Withdrawal extends Model
         'paypal_email',
         'status',
         'transaction_proof',
+        'feedback',
     ];
 
     public function user()

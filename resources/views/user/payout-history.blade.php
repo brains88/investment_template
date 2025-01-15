@@ -66,6 +66,7 @@
                                                      data-coin="{{ $withdrawal->coin_type }}"
                                                     data-network="{{ $withdrawal->network }}"
                                                     data-bank="{{ $withdrawal->bank_name }}"
+                                                     data-feedback="{{ $withdrawal->feedback }}"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#infoModal"
                                                 >

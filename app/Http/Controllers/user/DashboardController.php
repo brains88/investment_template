@@ -41,7 +41,7 @@ class DashboardController extends Controller
 
         $withdrawal = DB::table('withdrawals')
             ->where('user_id', $userId)
-            ->where('status', 'completed')
+            ->where('status', 'complete')
             ->sum('amount') ?? 0.00;
 
         $deposit = DB::table('deposits')
