@@ -62,6 +62,11 @@
                         ></span>
                         Sign In
                     </button>
+                    <p class="text-white mt-3 mb-2">
+                        <a @click="openForgotPasswordModal" style="">
+                            Forgot Password
+                        </a>
+                    </p>
                 </form>
             </div>
 
@@ -206,23 +211,24 @@ export default {
         // Handle password reset
         async handleForgotPassword() {
             this.loadingForgot = true;
+            this.successMessage = ""; // Clear previous messages
+            this.errorMessage = "";
+
             try {
                 const response = await axios.post("/api/password/email", {
                     email: this.forgotEmail,
                 });
-                if (response.data.success) {
-                    this.successMessage = "Reset link sent to your email!";
-                    this.showForgotPassword = false;
-                } else {
-                    this.errorMessage = response.data.message;
-                }
+
+                // Set success message only if the request is successful
+                this.successMessage = "Reset link sent to your email!";
+                this.showForgotPassword = false;
             } catch (error) {
+                // Display error message
                 this.errorMessage = "Unable to send reset link. Try Again";
             } finally {
                 this.loadingForgot = false;
             }
         },
-
         // Open the forgot password modal
         openForgotPasswordModal() {
             this.showForgotPassword = true;

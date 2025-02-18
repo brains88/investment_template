@@ -1,16 +1,9 @@
 <?php
-
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\DB;
-use App\Models\{User,Investment,Plan,Wallet,Deposit,Transfer,Balance,Withdrawal};
-use App\Mail\WelcomeMail;
-use Str;
-use Auth;
+use App\Models\Transfer;
+use App\Models\Withdrawal;
 
 class TransferController extends Controller
 {
@@ -18,7 +11,7 @@ class TransferController extends Controller
 
     public function GetUsertransfers()
     {
-        $transfers = Transfer::with(['sender', 'receiver'])->paginate(10); // Adjust pagination as needed
+        $transfers = Transfer::with(['sentTransfers', 'receivedTransfers'])->paginate(10); // Adjust pagination as needed
         return view('admin.transfer', compact('transfers'));
     }
 
@@ -31,6 +24,4 @@ class TransferController extends Controller
         return redirect()->route('admin.transfer')->with('success', 'Transfer deleted successfully.');
     }
 
-  
-    
 }

@@ -1,14 +1,11 @@
 <?php
-
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\URL;
 
 class ResetPasswordMail extends Mailable
 {
@@ -41,15 +38,13 @@ class ResetPasswordMail extends Mailable
      */
     public function content(): Content
     {
-        // Generate the password reset URL
-        $resetUrl = URL::temporarySignedRoute(
-            'password.reset', now()->addMinutes(60), ['token' => $this->token, 'email' => $this->email]
-        );
+        // Generate the frontend reset link (Vue.js route)
+        $resetUrl = env('APP_URL') . "/reset-password/{$this->token}?email=" . urlencode($this->email);
 
         return new Content(
-            view: 'emails.password_reset',  // The view for the email content
+            view: 'emails.password_reset', // The email template
             with: [
-                'resetUrl' => $resetUrl,  // Pass the reset URL to the view
+                'resetUrl' => $resetUrl, // Pass the frontend reset URL to the email
             ],
         );
     }

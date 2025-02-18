@@ -19,7 +19,13 @@ const routes = [
   { path: '/login', component: Login },
   { path: '/user-verification', component: Verification },
   { path: '/register', component: Register },
-  { path: '//password_reset', component: passwordReset },
+  {
+    path: "/reset-password/:token",
+    name: "ResetPassword",
+    component:passwordReset,
+    props: true,
+},
+
   { path: '/:pathMatch(.*)*', redirect: '/' },
 ];
 

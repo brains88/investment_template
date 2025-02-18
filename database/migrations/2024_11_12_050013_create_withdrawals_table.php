@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('transaction_number')->unique();
             $table->decimal('amount', 15, 2); // Amount to withdraw
-            $table->string('method'); // e.g., 'Bank Transfer', 'Zelle', 'PayPal', 'Crypto'
-
+            $table->string('method');         // e.g., 'Bank Transfer', 'Zelle', 'PayPal', 'Crypto'
+            $table->string('feedback');
             // Bank Transfer fields
             $table->string('bank_name')->nullable();
             $table->string('bank_account_number')->nullable();
@@ -37,12 +37,10 @@ return new class extends Migration
 
             $table->string('transaction_proof')->nullable();
 
-            $table->string('status')->default('pending'); 
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }
-
-    
 
     /**
      * Reverse the migrations.

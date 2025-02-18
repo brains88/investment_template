@@ -12,11 +12,9 @@ Route::get('/checkAdmin', [App\Http\Controllers\auth\authCheckController::class,
 Route::post('/register', [App\Http\Controllers\auth\registerController::class, 'register']);
 Route::post('/login', [App\Http\Controllers\auth\loginController::class, 'login']);
 Route::post('/user-verification', [App\Http\Controllers\auth\loginController::class, 'activateAccount']);
-Route::post('/password-reset', [App\Http\Controllers\auth\PasswordResetController::class, 'sendResetLinkEmail']);
-Route::post('/passwordreset', [App\Http\Controllers\auth\PasswordResetController::class, 'resetPassword']); // routes/api.php
 Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout']);
-Route::get('password/reset', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm']);
-Route::post('password/email', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendResetLinkEmail']);
+Route::post('password/email', [App\Http\Controllers\auth\PasswordResetController::class, 'sendResetLinkEmail']);
+Route::post('/password/reset', [App\Http\Controllers\auth\PasswordResetController::class, 'resetPassword'])->name('password.reset');
 Route::post('contact', [App\Http\Controllers\frontend\ContactController::class, 'store']);
 
 //User Routes

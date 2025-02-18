@@ -99,11 +99,9 @@
 
 <!-- The Captcha -->
 <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-
-<!-- The Tido -->
-<script src="//code.tidio.co/8qzi9njq6nkeeus10esgfv7ricxyjadv.js" async></script>
-<!-- The end of Tido -->
-
+<!-- For Tidio live support-->
+<script src="//code.tidio.co/2ecsguur3e1geikzj360pli5kk4iz4tx.js" async></script>
+<!-- The end of Tidio live support-->
 <script src="assets/js/app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
