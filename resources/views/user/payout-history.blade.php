@@ -42,14 +42,19 @@
                                         <td>{{ $withdrawal->method }}</td>
                                         <td>{{ $withdrawal->amount }} USD</td>
                                         <td>0.00 USD</td>
-                                        <td>
+                                          <td>
                                             <span class="badge
-                                                    @if($withdrawal->status == 'pending')
-                                                        bg-danger
-                                                    @elseif($withdrawal->status == 'complete')
-                                                        bg-success
-                                                    @endif
-                                                ">
+                                                @if(!empty($withdrawal->feedback))
+                                                    bg-warning
+                                                    @php
+                                                        $withdrawal->status = 'processing'; 
+                                                    @endphp
+                                                @elseif($withdrawal->status == 'pending')
+                                                    bg-danger
+                                                @elseif($withdrawal->status == 'complete')
+                                                    bg-success
+                                                @endif
+                                            ">
                                                 {{ ucfirst($withdrawal->status) }}
                                             </span>
                                         </td>
