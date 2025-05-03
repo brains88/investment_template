@@ -20,19 +20,25 @@
             <div class="row mb-4">
               <div class="col-lg-4 mb-4" v-for="plan in plans" :key="plan.id">
                 <div class="card shadow-lg">
+                  <!--
                   <img :src="'assets/img/coin.jpg'" class="card-img-top" alt="Investment Plan" />
+                  -->
                   <div class="card-body">
-                    <h3 class="plan-name text-center">{{ plan.name }}</h3>
-                    <p class="card-text text-center">
-                      <span class="badge bg-success p-3 mb-3"><b>{{ plan.interest }}%</b></span>
-                      <br />
-                      <span>Daily For {{ plan.duration }} Month(s)</span>
+                  <div class="plan-header text-center">
+                    <h3 class="plan-name" >{{ plan.name }}</h3>
+                    <p class="plan-amount mb-2" style="font-size: 1.5rem; font-weight: bold; color: #2e7d32;">
+                      ${{ plan.min_amount }} - ${{ plan.max_amount }}
                     </p>
-                    <div class="min-max-info">
-                      <p class="text-muted">
-                        Min. : <b>${{ plan.min_amount }}</b> | Max. : <b>${{ plan.max_amount }}</b>
-                      </p>
-                    </div>
+                  </div>
+
+                  <div class="plan-details text-center">
+                    <span class="badge bg-success p-3 mb-3" style="font-size: 1.1rem;">
+                      <b>{{ plan.interest }}% ROI</b>
+                    </span>
+                    <p class="duration" style="margin-bottom: 1rem;">
+                      For 1 Week
+                    </p>
+                  </div>
                       <!-- Success and error messages -->
                         <div class="message-container">
                             <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div>

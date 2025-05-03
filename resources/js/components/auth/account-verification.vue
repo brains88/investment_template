@@ -20,6 +20,13 @@
               <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
               Verify Account
             </button>
+            <div
+            class="text-center mt-3"
+            :style="{ color: '#fff' }"
+        >
+            Already have an account?
+            <router-link to="/login"> Login</router-link>
+        </div>
           </form>
         </div>
       </div>

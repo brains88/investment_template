@@ -62,6 +62,13 @@
                         ></span>
                         Sign In
                     </button>
+                    <div
+                            class="text-center mt-3"
+                            :style="{ color: '#fff' }"
+                        >
+                            I`m a new User?
+                            <router-link to="/register" >Sign Up</router-link>
+                        </div>
                     <p class="text-white mt-3 mb-2">
                         <a @click="openForgotPasswordModal" style="">
                             Forgot Password
