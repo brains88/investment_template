@@ -24,21 +24,20 @@
                             @foreach ($plans as $plan)
                                 <div class="col-lg-4 mb-3"> <!-- Reduced bottom margin here -->
                                     <div class="card shadow-lg" style="border-radius: 10px !important; overflow: hidden; transition: transform 0.3s ease;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
-                                        <img src="{{ asset('assets/img/coin.jpg') }}" class="card-img-top" alt="Investment Plan" style="height: 200px; width:100% !important; object-fit: cover;" />
-                                        <div class="card-body" style="text-align: center; padding: 1rem;"> <!-- Reduced padding here -->
-                                        <h1 class="text-center" 
-                                            style="font-size:30px !important; font-weight: 600; color: #fff; background: linear-gradient(90deg, rgb(85, 43, 170), #ffce28); -webkit-background-clip: text; margin-bottom: 0.5rem;">
-                                            {{ $plan->name }}
-                                        </h1>
+                                            <div class="card-body">
+                                            <div class="plan-header text-center">
+                                                <h3 class="plan-name" >{{ $plan->name }}</h3>
+                                                <p class="plan-amount mb-2" style="font-size: 1.5rem; font-weight: bold; color: #2e7d32;">
+                                                ${{ $plan->min_amount }} - ${{ $plan->max_amount }}
+                                                </p>
+                                            </div>
 
-                                            <p class="card-text text-center" style="font-size: 1rem; margin-bottom: 1rem;">
-                                                <span class="badge bg-success p-3 mb-3"><b>{{ $plan->interest }}%</b></span>
-                                                <br />
-                                                <span>For {{ $plan->duration }} Month</span>
-                                            </p>
-                                            <div class="min-max-info">
-                                                <p class="text-muted text-white mb-2" style="font-size: 0.9rem; color:white !important">
-                                                <b class="text-white">${{ $plan->min_amount }}</b> - <b class="text-white">${{ $plan->max_amount }}</b>
+                                            <div class="plan-details text-center">
+                                                <span class="badge bg-success p-3 mb-3" style="font-size: 1.1rem;">
+                                                <b>{{ $plan->interest }}% ROI</b>
+                                                </span>
+                                                <p class="duration" style="margin-bottom: 1rem;">
+                                                For {{ $plan->duration}} Week(s)
                                                 </p>
                                             </div>
 

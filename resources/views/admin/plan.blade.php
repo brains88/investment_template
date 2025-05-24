@@ -49,7 +49,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $plan->name }}</td>
                                             <td>{{ $plan->interest }}%</td>
-                                            <td>{{ $plan->duration }} months</td>
+                                            <td>{{ $plan->duration }} week(s)</td>
                                             <td>${{ $plan->min_amount }}</td>
                                             <td>${{ $plan->max_amount }}</td>
                                             <td>{{ $plan->created_at->format('d M Y') }}</td>
@@ -86,7 +86,7 @@
                                                                 <input type="number" name="interest" class="form-control" value="{{ $plan->interest }}" required>
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="duration" class="form-label">Duration (Months)</label>
+                                                                <label for="duration" class="form-label">Duration (weeks)</label>
                                                                 <input type="number" name="duration" class="form-control" value="{{ $plan->duration }}" required>
                                                             </div>
                                                             <div class="mb-3">
@@ -140,7 +140,7 @@
                                 <input type="number" name="interest" class="form-control" required>
                             </div>
                             <div class="mb-3">
-                                <label for="duration" class="form-label">Duration (Months)</label>
+                                <label for="duration" class="form-label">Duration (weeks)</label>
                                 <input type="number" name="duration" class="form-control" required>
                             </div>
                             <div class="mb-3">

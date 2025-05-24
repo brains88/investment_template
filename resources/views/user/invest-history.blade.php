@@ -58,19 +58,19 @@
                                         <td>
                                             {{ $investment['status'] }}
                                         </td>
-                                        <td>
+                                         <td>
                                             <div class="d-flex flex-column align-items-start">
-                                                <span class="countdown mb-1" id="countdown-{{ $investment['id'] }}"
-                                                    data-remaining-time="{{ $investment['remainingTime'] ?? 0 }}"
-                                                    data-total-time="{{ $investment['totalTime'] ?? 0 }}">
-                                                    {{ gmdate('H\h i\m s\s', max(0, $investment['remainingTime'] ?? 0)) }}
+                                                <span class="countdown mb-1" id="countdown-{{ $investment->id }}"
+                                                    data-remaining-time="{{ $investment->remainingTime ?? 0 }}"
+                                                    data-total-time="{{ $investment->totalTime ?? 0 }}">
+                                                    {{ gmdate('H\h i\m s\s', max(0, $investment->remainingTime ?? 0)) }}
                                                 </span>
                                                 <div class="progress w-100">
-                                                    <div id="progress-bar-{{ $investment['id'] }}"
-                                                        class="progress-bar {{ ($investment['investPercentage'] ?? 0) == 100 ? 'bg-success' : 'bg-info' }}"
+                                                    <div id="progress-bar-{{ $investment->id }}"
+                                                        class="progress-bar {{ ($investment->investPercentage ?? 0) == 100 ? 'bg-success' : 'bg-info' }}"
                                                         role="progressbar"
-                                                        style="width: {{ $investment['investPercentage'] ?? 0 }}%;"
-                                                        aria-valuenow="{{ $investment['investPercentage'] ?? 0 }}"
+                                                        style="width: {{ $investment->investPercentage ?? 0 }}%;"
+                                                        aria-valuenow="{{ $investment->investPercentage ?? 0 }}"
                                                         aria-valuemin="0" aria-valuemax="100">
                                                     </div>
                                                 </div>
@@ -97,7 +97,8 @@
     @include('layout.footer')
 
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+   //Time Counting
+document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.countdown').forEach(countdown => {
             const countdownId = countdown.id;
             const investmentId = countdownId.split('-')[1];
@@ -118,11 +119,15 @@
                 if (remainingTime > 0) {
                     remainingTime -= 1;
 
-                    let hours = Math.floor(remainingTime / 3600);
+                    // Convert remaining seconds to days, hours, minutes, seconds
+                    let days = Math.floor(remainingTime / (3600 * 24));
+                    let hours = Math.floor((remainingTime % (3600 * 24)) / 3600);
                     let minutes = Math.floor((remainingTime % 3600) / 60);
                     let seconds = remainingTime % 60;
 
-                    countdown.textContent =
+                    // Display with days if needed
+                    countdown.textContent = 
+                        (days > 0 ? `${days}d ` : '') +
                         `${String(hours).padStart(2, '0')}h ` +
                         `${String(minutes).padStart(2, '0')}m ` +
                         `${String(seconds).padStart(2, '0')}s`;
@@ -130,6 +135,7 @@
                     const progressPercentage = ((totalTime - remainingTime) / totalTime) * 100;
                     progressBar.style.width = `${progressPercentage}%`;
                     progressBar.setAttribute('aria-valuenow', progressPercentage.toFixed(2));
+
                 } else {
                     clearInterval(interval);
                     countdown.textContent = '00h 00m 00s';

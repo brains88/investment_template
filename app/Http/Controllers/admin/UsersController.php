@@ -44,36 +44,46 @@ class UsersController extends Controller
         $totalDepositAmount    = $deposits->sum('amount');
         $totalReferredUsers    = $referrals->count();
 
-        foreach ($investments as $investment) {
-            // Ensure timestamps are valid before calculations
-            if (! $investment->start_time || ! $investment->end_time) {
-                continue;
+      foreach ($investments as $investment) {
+                // Check if investment has a plan and start time
+                if (!$investment->start_time || !$investment->plan || !$investment->plan->duration) {
+                    continue;
+                }
+
+                // Convert duration to integer before using addWeeks()
+                $durationWeeks = (int)$investment->plan->duration;
+                
+                // Calculate end time based on plan duration (in weeks)
+                $endTime = $investment->start_time->copy()->addWeeks($durationWeeks);
+                
+                // If no explicit end_time in database, set it
+                if (!$investment->end_time) {
+                    $investment->end_time = $endTime;
+                    $investment->save();
+                }
+
+                $totalDuration = $endTime->timestamp - $investment->start_time->timestamp;
+                $elapsedTime = now()->timestamp - $investment->start_time->timestamp;
+
+                if ($totalDuration <= 0) {
+                    $investment->status = 'completed';
+                    $investment->save();
+                    continue;
+                }
+
+                // Calculate progress
+                $investment->investPercentage = min(100, max(0, ($elapsedTime / $totalDuration) * 100));
+                $investment->remainingTime = max(0, $endTime->timestamp - now()->timestamp);
+
+                // Process interest if investment completed
+                if ($investment->investPercentage >= 100 && $investment->status !== 'completed') {
+                    $returnOnInvestment = $investment->amount * ($investment->return_on_investment / 10000);
+                    Balance::where('user_id', $investment->user_id)->increment('interest', $returnOnInvestment);
+                    
+                    $investment->status = 'completed';
+                    $investment->save();
+                }
             }
-
-            $totalDuration = $investment->end_time->timestamp - $investment->start_time->timestamp;
-            $elapsedTime   = now()->timestamp - $investment->start_time->timestamp;
-
-            // Ensure duration is positive to avoid division errors
-            if ($totalDuration <= 0) {
-                $investment->status = 'completed';
-                $investment->save();
-                continue;
-            }
-
-            // Calculate progress (but do NOT save these to DB)
-            $investment->investPercentage = min(100, max(0, ($elapsedTime / $totalDuration) * 100));
-            $investment->remainingTime    = max(0, $totalDuration - $elapsedTime);
-
-            // Only process interest if the investment is NOT already completed
-            if ($investment->investPercentage >= 100 && $investment->status !== 'completed') {
-                $returnOnInvestment = $investment->amount * ($investment->return_on_investment / 10000);
-                Balance::where('user_id', $investment->user_id)->increment('interest', $returnOnInvestment);
-
-                // Mark investment as completed
-                $investment->status = 'completed';
-                $investment->save();
-            }
-        }
 
         return view('admin.user-details', compact(
             'user',

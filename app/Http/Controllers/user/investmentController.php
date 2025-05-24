@@ -36,40 +36,54 @@ class investmentController extends Controller
         return view('user.plan', compact('plans', 'userData'));
     }
 
-    public function userInvestments()
-    {
-        $investments = Investment::with('plan')->where('user_id', Auth::id())->paginate(10);
-        $userData    = auth()->user();
+        public function userInvestments()
+        {
+            $investments = Investment::with('plan')->where('user_id', Auth::id())->paginate(10);
+            $userData    = auth()->user();
 
         foreach ($investments as $investment) {
-            // Calculate the investment progress and remaining time
-            $totalDuration = $investment->end_time->timestamp - $investment->start_time->timestamp;
-            $elapsedTime   = now()->timestamp - $investment->start_time->timestamp;
+                    // Check if investment has a plan and start time
+                    if (!$investment->start_time || !$investment->plan || !$investment->plan->duration) {
+                        continue;
+                    }
 
-            // Ensure duration is positive to avoid division errors
-            if ($totalDuration <= 0) {
-                $investment->status = 'completed';
-                $investment->save();
-                continue;
-            }
+                    // Convert duration to integer before using addWeeks()
+                    $durationWeeks = (int)$investment->plan->duration;
+                    
+                    // Calculate end time based on plan duration (in weeks)
+                    $endTime = $investment->start_time->copy()->addWeeks($durationWeeks);
+                    
+                    // If no explicit end_time in database, set it
+                    if (!$investment->end_time) {
+                        $investment->end_time = $endTime;
+                        $investment->save();
+                    }
 
-            // Calculate progress (but do NOT save these to DB)
-            $investment->investPercentage = min(100, max(0, ($elapsedTime / $totalDuration) * 100));
-            $investment->remainingTime    = max(0, $totalDuration - $elapsedTime);
+                    $totalDuration = $endTime->timestamp - $investment->start_time->timestamp;
+                    $elapsedTime = now()->timestamp - $investment->start_time->timestamp;
 
-            // Only process interest if the investment is NOT already completed
-            if ($investment->investPercentage >= 100 && $investment->status !== 'completed') {
-                $returnOnInvestment = $investment->amount * ($investment->return_on_investment / 10000);
-                Balance::where('user_id', $investment->user_id)->increment('interest', $returnOnInvestment);
+                    if ($totalDuration <= 0) {
+                        $investment->status = 'completed';
+                        $investment->save();
+                        continue;
+                    }
 
-                // Mark investment as completed
-                $investment->status = 'completed';
-                $investment->save();
-            }
+                    // Calculate progress
+                    $investment->investPercentage = min(100, max(0, ($elapsedTime / $totalDuration) * 100));
+                    $investment->remainingTime = max(0, $endTime->timestamp - now()->timestamp);
+
+                    // Process interest if investment completed
+                    if ($investment->investPercentage >= 100 && $investment->status !== 'completed') {
+                        $returnOnInvestment = $investment->amount * ($investment->return_on_investment / 10000);
+                        Balance::where('user_id', $investment->user_id)->increment('interest', $returnOnInvestment);
+                        
+                        $investment->status = 'completed';
+                        $investment->save();
+                    }
+                }
+
+            return view('user.invest-history', compact('investments', 'userData'));
         }
-
-        return view('user.invest-history', compact('investments', 'userData'));
-    }
 
     // InvestmentController.php
     public function makeInvestment(Request $request)
@@ -108,9 +122,11 @@ class investmentController extends Controller
             return response()->json(['success' => false, 'message' => 'Insufficient balance for this investment.']);
         }
 
-        // Calculate duration (add 2 months)
+        // Calculate duration
         $startTime = now();
-        $endTime   = $startTime->copy()->addMonths($plan->duration + 2);
+        $durationWeeks = (int)$plan->duration;
+        $endTime   = $startTime->copy()->addWeeks($durationWeeks);
+        
 
         // Calculate ROI
         $roi = ($validated['amount'] * $plan->interest) / 100;
