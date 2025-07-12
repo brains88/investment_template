@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('plan_id')->constrained()->onDelete('cascade');
             $table->decimal('amount', 15, 2);
             $table->decimal('return_on_investment', 15, 2);
+            $table->decimal('amount_earned', 15, 2);
             $table->timestamps();
         });
     }

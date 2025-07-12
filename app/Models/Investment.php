@@ -17,6 +17,7 @@ class Investment extends Model
         'return_on_investment',
         'start_time', 
         'end_time',
+        'amount_earned',
     ];
 
     public function user()

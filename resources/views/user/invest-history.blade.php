@@ -26,7 +26,7 @@
                                         <th scope="col">SL</th>
                                         <th scope="col">Plan</th>
                                         <th scope="col">Return Interest</th>
-                                        <th scope="col">Received Amount</th>
+                                        <th scope="col">Amount Earned</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Upcoming Payment</th>
                                     </tr>
@@ -48,11 +48,11 @@
                                             {{ $investment['amount'] }} USD
                                         </td>
                                         <td>
-                                            {{ $investment['return_on_investment'] }} USD per
-                                            {{ $investment['plan']['duration'] }} Days
+                                            {{ $investment['return_on_investment'] }} USD for
+                                            {{ $investment['plan']['duration'] }} week(s)
                                         </td>
                                         <td>
-                                            {{ $investment['amount'] * ($investment['return_on_investment'] / 10000) }}
+                                            {{ $investment['amount_earned']}} 
                                             USD
                                         </td>
                                         <td>
