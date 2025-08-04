@@ -1,470 +1,324 @@
-@include('layout.header') <!-- Header Component -->
+@extends('layouts.app')
+@section('title', ' Dashboard - Equitify Trades LC')
 
-<body  >
-    <div class="wrapper">
-      
-    @include('layout.usernavbar')
- <!------------- others main dashboard body content ------------>
-              
-    <!---- other balances ----->
-    <section class="statistic-section mt-5 pt-5 pb-0">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <div class="header-text-full">
-                        <h2>dashboard</h2>
-                    </div>
-                </div>
+@section('content')
+<!-- Dashboard Cards Section -->
+<section style="margin-top: 40px; margin-bottom: 30px; padding: 0 15px;">
+    <!-- Page Heading -->
+    <div class="row mt-4">
+        <div class="col">
+            <div class="header-text-full">
+                <h2 class="text-uppercase" style="font-weight: 700; padding-top: 10px;">Dashboard</h2>
             </div>
-            <div class="row">
-                <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
-                    <div
-                        class="box"
-                        data-aos="fade-up"
-                        data-aos-duration="800"
-                        data-aos-anchor-placement="center-bottom"
-                    >
-                        <div class="img-box">
-                            <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/fund.png" alt="Main Balance"/>
-                        </div>
-                        <h4>Main Balance</h4>
-                        <h2>
-                            ${{ $balance->balance ?? 0.00 }}
-                        </h2>
-                    </div>
+        </div>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between;">
+
+        <!-- Main Balance -->
+        <div
+            style="flex: 1 1 calc(25% - 20px); background-color: #222; border-radius: 10px; padding: 20px; text-align: center; min-width: 220px;">
+            <div style="font-size: 30px; color: #fff; margin-bottom: 15px;">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <h5 style="color: #ccc; margin-bottom: 5px;">Main Balance</h5>
+            <h2 style="color: #fff; font-weight: bold; padding-top: 10px;">${{ $balance->balance ?? 0.00 }}</h2>
+        </div>
+
+        <!-- Interest Balance -->
+        <div
+            style="flex: 1 1 calc(25% - 20px); background-color: #222; border-radius: 10px; padding: 20px; text-align: center; min-width: 220px;">
+            <div style="font-size: 30px; color: #fff; margin-bottom: 15px;">
+                <i class="fas fa-piggy-bank"></i>
+            </div>
+            <h5 style="color: #ccc; margin-bottom: 5px;">Interest Balance</h5>
+            <h2 style="color: #fff; font-weight: bold; padding-top: 10px;">${{ $balance->interest ?? 0.00 }}
+            </h2>
+        </div>
+
+        <!-- Total Deposit -->
+        <div
+            style="flex: 1 1 calc(25% - 20px); background-color: #222; border-radius: 10px; padding: 20px; text-align: center; min-width: 220px;">
+            <div style="font-size: 30px; color: #fff; margin-bottom: 15px;">
+                <i class="fas fa-coins"></i>
+            </div>
+            <h5 style="color: #ccc; margin-bottom: 5px;">Total Deposit</h5>
+            <h2 style="color: #fff; font-weight: bold; padding-top: 10px;">${{ $deposit ?? 0.00 }}</h2>
+        </div>
+
+        <!-- Total Earn -->
+        <div
+            style="flex: 1 1 calc(25% - 20px); background-color: #222; border-radius: 10px; padding: 20px; text-align: center; min-width: 220px;">
+            <div style="font-size: 30px; color: #fff; margin-bottom: 15px;">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h5 style="color: #ccc; margin-bottom: 5px;">Total ROI Earned</h5>
+            <h2 style="color: #fff; font-weight: bold; padding-top: 10px;">${{ $TotalEarn ?? 0.00 }}</h2>
+        </div>
+
+    </div>
+</section>
+
+<!---- charts ----->
+<!-- Chart + Circular Stats -->
+<section style="margin-top: 60px;">
+    <div style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; padding: 0 15px;">
+
+        <!-- Chart Section -->
+        <div style="margin-top: 40px; background: #1e1e1e; padding: 20px; border-radius: 10px;">
+            <h3 style="color: #f0c75e; margin-bottom: 20px;">Monthly Financial Overview</h3>
+            <div id="chart" style="min-height: 300px;"></div>
+        </div>
+
+        <!-- Circular Progress Cards -->
+        <div style="flex: 1 1 480px; background: #1e1e1e; border-radius: 10px; padding: 15px 10px;">
+            <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px;">
+
+                <!-- Invest Completed -->
+                <div
+                    style="background: #2a2a2a; border-radius: 10px; padding: 20px; width: 200px; min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <svg class="radial-progress" data-percentage="{{ $investPercentage }}" viewBox="0 0 80 80"
+                        width="100" height="100">
+                        <circle class="incomplete" cx="40" cy="40" r="30"
+                            style="fill: none; stroke: #333; stroke-width: 6;"></circle>
+                        <circle class="complete" cx="40" cy="40" r="30"
+                            style="fill: none; stroke: #f8b739; stroke-width: 6; stroke-dasharray: 188; stroke-dashoffset: {{ 188 - ($investPercentage * 1.88) }};">
+                        </circle>
+                        <text x="50%" y="53%" text-anchor="middle" fill="#fff"
+                            font-size="12">{{ $investPercentage }}%</text>
+                    </svg>
+                    <h5 style="color: #f8b739; margin-top: 12px; font-size: 13px;">Invest Completed</h5>
                 </div>
-                <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
-                    <div
-                        class="box"
-                        data-aos="fade-up"
-                        data-aos-duration="1200"
-                        data-aos-anchor-placement="center-bottom"
-                    >
-                        <div class="img-box">
-                            <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/money-bag.png" alt="Interest Balance"/>
-                        </div>
-                        <h4>Interest Balance</h4>
-                        <h2>
-                            ${{ $balance->interest ?? 0.00 }}
-                        </h2>
-                    </div>
+
+                <!-- ROI Earned -->
+                <div
+                    style="background: #2a2a2a; border-radius: 10px; padding: 20px; width: 200px; min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <svg class="radial-progress" data-percentage="{{ $roiPercentage }}" viewBox="0 0 80 80" width="100"
+                        height="100">
+                        <circle class="incomplete" cx="40" cy="40" r="30"
+                            style="fill: none; stroke: #333; stroke-width: 6;"></circle>
+                        <circle class="complete" cx="40" cy="40" r="30"
+                            style="fill: none; stroke: #1abc9c; stroke-width: 6; stroke-dasharray: 188; stroke-dashoffset: {{ 188 - ($roiPercentage * 1.88) }};">
+                        </circle>
+                        <text x="50%" y="53%" text-anchor="middle" fill="#fff"
+                            font-size="12">{{ $roiPercentage }}%</text>
+                    </svg>
+                    <h5 style="color: #1abc9c; margin-top: 12px; font-size: 13px;">ROI Earned</h5>
                 </div>
-                <div class="col-md-6 col-lg-3 mb-4 mb-md-0">
-                    <div
-                        class="box"
-                        data-aos="fade-up"
-                        data-aos-duration="800"
-                        data-aos-anchor-placement="center-bottom"
-                    >
-                        <div class="img-box">
-                            <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/invest.png" alt="Total Deposit"/>
-                        </div>
-                        <h4>Total Deposit</h4>
-                        <h2>
-                            ${{ $deposit ?? 0.00 }}
-                        </h2>
-                    </div>
+
+                <!-- ROI Speed -->
+                <div
+                    style="background: #2a2a2a; border-radius: 10px; padding: 20px; width: 200px; min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <svg class="radial-progress" data-percentage="{{ $roiSpeed }}" viewBox="0 0 80 80" width="100"
+                        height="100">
+                        <circle class="incomplete" cx="40" cy="40" r="30"
+                            style="fill: none; stroke: #333; stroke-width: 6;"></circle>
+                        <circle class="complete" cx="40" cy="40" r="30"
+                            style="fill: none; stroke: #3498db; stroke-width: 6; stroke-dasharray: 188; stroke-dashoffset: {{ 188 - ($roiSpeed * 1.88) }};">
+                        </circle>
+                        <text x="50%" y="53%" text-anchor="middle" fill="#fff" font-size="12">{{ $roiSpeed }}%</text>
+                    </svg>
+                    <h5 style="color: #3498db; margin-top: 12px; font-size: 13px;">ROI Speed</h5>
                 </div>
-                <div class="col-md-6 col-lg-3">
-                    <div
-                        class="box"
-                        data-aos="fade-up"
-                        data-aos-duration="1200"
-                        data-aos-anchor-placement="center-bottom"
-                    >
-                        <div class="img-box">
-                            <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/pay-history.png" alt="Total Earn"/>
-                        </div>
-                        <h4>Total Earn</h4>
-                        <h2>
-                            ${{ $TotalEarn ?? 0.00 }}
-                        </h2>
-                    </div>
+
+                <!-- ROI Earned -->
+                <div style="text-align: center;">
+                    <svg class="radial-progress" data-percentage="{{ $roiPercentage }}" viewBox="0 0 80 80" width="100"
+                        height="100">
+                        <circle class="incomplete" cx="40" cy="40" r="30"
+                            style="fill: none; stroke: #333; stroke-width: 6;"></circle>
+                        <circle class="complete" cx="40" cy="40" r="30"
+                            style="fill: none; stroke: #1abc9c; stroke-width: 6; stroke-dasharray: 188; stroke-dashoffset: {{ 188 - ($roiPercentage * 1.88) }};">
+                        </circle>
+                        <text x="50%" y="53%" text-anchor="middle" fill="#fff"
+                            font-size="12">{{ $roiPercentage }}%</text>
+                    </svg>
+                    <h5 style="color: #1abc9c; margin-top: 8px; font-size: 13px;">ROI Earned</h5>
+                </div>
+
+                <!-- ROI Speed -->
+                <div style="text-align: center;">
+                    <svg class="radial-progress" data-percentage="{{ $roiSpeed }}" viewBox="0 0 80 80" width="100"
+                        height="100">
+                        <circle class="incomplete" cx="40" cy="40" r="30"
+                            style="fill: none; stroke: #333; stroke-width: 6;"></circle>
+                        <circle class="complete" cx="40" cy="40" r="30"
+                            style="fill: none; stroke: #3498db; stroke-width: 6; stroke-dasharray: 188; stroke-dashoffset: {{ 188 - ($roiSpeed * 1.88) }};">
+                        </circle>
+                        <text x="50%" y="53%" text-anchor="middle" fill="#fff" font-size="12">{{ $roiSpeed }}%</text>
+                    </svg>
+                    <h5 style="color: #3498db; margin-top: 8px; font-size: 13px;">ROI Speed</h5>
                 </div>
             </div>
         </div>
-    </section>
 
+    </div>
+</section>
 
-    <!---- charts ----->
-    <section class="chart-information mt-5">
-        <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="col-lg-6 mb-4 mb-lg-0">
-                    <div class="progress-wrapper">
-                        <div
-                            id="container"
-                            class="apexcharts-canvas"
-                        ></div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-            <div class="progress-wrapper progress-wrapper-circle">
-                <div class="progress-container d-flex flex-column flex-sm-row justify-content-around">
-                    <!-- Investment Completed -->
-                    <div class="circular-progress cp_1">
-                        <svg class="radial-progress" data-percentage="{{ $investPercentage }}" viewBox="0 0 80 80">
-                            <circle class="incomplete" cx="40" cy="40" r="35"></circle>
-                            <circle class="complete" cx="40" cy="40" r="35" 
-                                style="stroke-dashoffset: {{ 220 - ($investPercentage * 2.2) }};">
-                            </circle>
-                            <text class="percentage" x="50%" y="53%" transform="matrix(0, 1, -1, 0, 80, 0)">
-                                {{ $investPercentage }} %
-                            </text>
-                        </svg>
-                        <h4 class="golden-text mt-4 text-center">Invest Completed</h4>
-                    </div>
+<!-- Account Statistics Cards -->
+<section style="margin-top: 80px; padding: 0 15px;">
+    <h2 style="text-align: center; color: #fff; margin-bottom: 30px; font-size: 28px; padding-top: 15px;">
+        Account Statistics</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
 
-                    <!-- ROI Earned -->
-                    <div class="circular-progress cp_3">
-                        <svg class="radial-progress" data-percentage="{{ $roiPercentage }}" viewBox="0 0 80 80">
-                            <circle class="incomplete" cx="40" cy="40" r="35"></circle>
-                            <circle class="complete" cx="40" cy="40" r="35" 
-                                style="stroke-dashoffset: {{ 220 - ($roiPercentage * 2.2) }};">
-                            </circle>
-                            <text class="percentage" x="50%" y="53%" transform="matrix(0, 1, -1, 0, 80, 0)">
-                                {{ $roiPercentage }} %
-                            </text>
-                        </svg>
-                        <h4 class="golden-text mt-4 text-center">ROI Earned</h4>
-                    </div>
-
-                    <!-- ROI Speed -->
-                    <div class="circular-progress cp_2">
-                        <svg class="radial-progress" data-percentage="{{ $roiSpeed }}" viewBox="0 0 80 80">
-                            <circle class="incomplete" cx="40" cy="40" r="35"></circle>
-                            <circle class="complete" cx="40" cy="40" r="35" 
-                                style="stroke-dashoffset: {{ 220 - ($roiSpeed * 2.2) }};">
-                            </circle>
-                            <text class="percentage" x="50%" y="53%" transform="matrix(0, 1, -1, 0, 80, 0)">
-                                {{ $roiSpeed }} %
-                            </text>
-                        </svg>
-                        <h4 class="golden-text mt-4 text-center">ROI Speed</h4>
-                    </div>
-                </div>
+        <!-- Total Invest -->
+        <div
+            style="flex: 1 1 calc(25% - 20px); background: #222; border-radius: 10px; padding: 20px; text-align: center; min-width: 220px;">
+            <div style="font-size: 30px; color: #f1c40f; margin-bottom: 15px;">
+                <i class="fas fa-piggy-bank"></i>
             </div>
+            <h5 style="color: #ccc;">Total Invest</h5>
+            <h2 style="color: #fff; font-weight: bold; padding-top: 10px;">${{ $investment ?? 0.00 }}</h2>
         </div>
 
-
-
-    <!----- account balances ----->
-    <section class="statistic-section mt-5 pt-5 pb-0">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col">
-                    <div class="header-text-full">
-                        <h2 class="text-center">Account Statistics</h2>
-                    </div>
-                </div>
+        <!-- Total Payout -->
+        <div
+            style="flex: 1 1 calc(25% - 20px); background: #222; border-radius: 10px; padding: 20px; text-align: center; min-width: 220px;">
+            <div style="font-size: 30px; color: #e74c3c; margin-bottom: 15px;">
+                <i class="fas fa-hand-holding-usd"></i>
             </div>
-            <div class="row">
-                <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
-                    <div
-                        class="box"
-                        data-aos="fade-up"
-                        data-aos-duration="800"
-                        data-aos-anchor-placement="center-bottom"
-                    >
-                        <div class="img-box">
-                            <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/money-bag.png" alt="Total Invest"/>
-                        </div>
-                        <h4>Total Invest</h4>
-                        <h2>
-                            ${{ $investment ?? 0.00 }}
-                        </h2>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
-                    <div
-                        class="box"
-                        data-aos="fade-up"
-                        data-aos-duration="1200"
-                        data-aos-anchor-placement="center-bottom"
-                    >
-                        <div class="img-box">
-                            <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/payout.png" alt="Total Payout"/>
-                        </div>
-                        <h4>Total Payout</h4>
-                        <h2>
-                            ${{ $withdrawal ?? 0.00 }}
-                        </h2>
-                    </div>
-                </div>
-                <!--
-                <div class="col-md-6 col-lg-3 mb-4 mb-md-0">
-                    <div
-                        class="box"
-                        data-aos="fade-up"
-                        data-aos-duration="800"
-                        data-aos-anchor-placement="center-bottom"
-                    >
-                        <div class="img-box">
-                            <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/support.png" alt="Total Ticket"/>
-                        </div>
-                        <h4>Total Ticket</h4>
-                        <h2>0</h2>
-                    </div>
-                </div>
-                -->
-                <div class="col-md-6 col-lg-3">
-                    <div
-                        class="box"
-                        data-aos="fade-up"
-                        data-aos-duration="1200"
-                        data-aos-anchor-placement="center-bottom"
-                    >
-                        <div class="img-box">
-                            <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/bonus.png" alt="Total Referral Bonus"/>
-                        </div>
-                        <h4>Total Referral Bonus</h4>
-                        <h2>
-                            ${{ $referralBonous ?? 0.00 }}
-                        </h2>
-                    </div>
-                </div>
-            </div>
+            <h5 style="color: #ccc;">Total Payout</h5>
+            <h2 style="color: #fff; font-weight: bold; padding-top: 10px;">${{ $withdrawal ?? 0.00 }}</h2>
         </div>
-    </section>
 
-    <!----- refferal-information ----->
-    <section class="refferal-link mt-5">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="box">
-                        <h4 class="golden-text">Referral Link</h4>
-                        <div class="input-group">
-                        <input
-                        type="text"
-                        value="{{ auth()->user()->referral_link }}"
-                        class="form-control"
-                        id="sponsorURL"
-                        readonly
-                    />
-
-                            <button class="gold-btn copytext" id="copyBoard" onclick="copyFunction()"><i
-                                    class="fa fa-copy mx-1"></i>copy link</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 mb-4 mb-md-0 refferal-information mt-5">
-                        <div class="box">
-                            <div class="img-box">
-                                <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/handshake.png" alt="handshake img"/>
-                            </div>
-                            <div>
-                                <h4 class="golden-text">Latest Registered Partner</h4>
-                                <p>
-                                    @if($latestReferral && $latestReferral->referredUser)
-                                        {{ $latestReferral->referredUser->username}}
-                                        <span class="pe-2">Email: {{ $latestReferral->referredUser->email }}</span>
-                                    @else
-                                        No referrals yet.
-                                    @endif
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 refferal-information mt-5">
-                        <div class="box">
-                            <div class="img-box">
-                                <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/deposit.png" alt="Referral Bonus img"/>
-                            </div>
-                            <div>
-                                <h4 class="golden-text">The Last Referral Bonus</h4>
-                                <p>
-                                    @if($latestReferral)
-                                        ${{ number_format($latestReferral->referral_bonus, 2) }}
-                                    @else
-                                        No bonus yet.
-                                    @endif
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
+        <!-- Total Referral Bonus -->
+        <div
+            style="flex: 1 1 calc(25% - 20px); background: #222; border-radius: 10px; padding: 20px; text-align: center; min-width: 220px;">
+            <div style="font-size: 30px; color: #9b59b6; margin-bottom: 15px;">
+                <i class="fas fa-gift"></i>
             </div>
+            <h5 style="color: #ccc;">Referral Bonus</h5>
+            <h2 style="color: #fff; font-weight: bold; padding-top: 10px;">${{ $referralBonous ?? 0.00 }}</h2>
         </div>
-    </section>
+    </div>
+</section>
 
-
-           </div>
+<!-- Referral Section -->
+<section style="margin-top: 80px; padding: 0 15px;">
+    <div style="background: #1e1e1e; border-radius: 10px; padding: 20px; margin-bottom: 40px;">
+        <h4 style="color: #f8b739; margin-bottom: 15px;">Referral Link</h4>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" value="{{ auth()->user()->referral_link }}" readonly
+                style="flex-grow: 1; padding: 10px; border-radius: 5px; border: none;">
+            <button onclick="copyFunction()"
+                style="background: #f8b739; border: none; padding: 10px 15px; border-radius: 5px; color: #000; font-weight: bold;">
+                <i class="fa fa-copy"></i> Copy
+            </button>
         </div>
     </div>
 
+    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+        <!-- Latest Partner -->
+        <div style="flex: 1 1 300px; background: #222; border-radius: 10px; padding: 20px;">
+            <div style="font-size: 24px; color: #1abc9c; margin-bottom: 10px;">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h4 style="color: #f8b739;">Latest Partner</h4>
+            <p style="color: #ccc;">
+                @if($latestReferral && $latestReferral->referredUser)
+                {{ $latestReferral->referredUser->username }} - {{ $latestReferral->referredUser->email }}
+                @else
+                No referrals yet.
+                @endif
+            </p>
+        </div>
 
-    @include('layout.footer') 
-   
+        <!-- Last Referral Bonus -->
+        <div style="flex: 1 1 300px; background: #222; border-radius: 10px; padding: 20px;">
+            <div style="font-size: 24px; color: #9b59b6; margin-bottom: 10px;">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <h4 style="color: #f8b739;">Last Referral Bonus</h4>
+            <p style="color: #ccc;">
+                @if($latestReferral)
+                ${{ number_format($latestReferral->referral_bonus, 2) }}
+                @else
+                No bonus yet.
+                @endif
+            </p>
+        </div>
+    </div>
+</section>
+@endsection
 
-    <script src="https://www.equitytradeslc.com/assets/themes/deepblack/js/apexcharts.js"></script>
-
-
-    <script>
-    "use strict";
-
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
     const depositData = @json($depositData);
     const withdrawalData = @json($withdrawalData);
     const investmentData = @json($investmentData);
 
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    
-    // Map the data to ensure it aligns with each month (fill with 0 for missing months)
-    const depositValues = months.map((_, index) => depositData[index + 1] || 0);
-    const withdrawalValues = months.map((_, index) => withdrawalData[index + 1] || 0);
-    const investmentValues = months.map((_, index) => investmentData[index + 1] || 0);
+    const months = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    const depositValues = months.map((_, i) => depositData[i + 1] || 0);
+    const withdrawalValues = months.map((_, i) => withdrawalData[i + 1] || 0);
+    const investmentValues = months.map((_, i) => investmentData[i + 1] || 0);
 
     var options = {
-        theme: {
-            mode: 'dark',
-        },
-        series: [
-            {
-                name: "Investment",
-                color: 'rgba(247, 147, 26, 1)',
-                data: investmentValues
-            },
-            {
-                name: "Payout (Withdrawal)",
-                color: 'rgba(240, 16, 16, 1)',
-                data: withdrawalValues
-            },
-            {
-                name: "Deposit",
-                color: 'rgba(255, 72, 0, 1)',
-                data: depositValues
-            }
-        ],
         chart: {
-            type: 'bar',
-            background: '#000',
+            type: 'area',
+            height: 300,
             toolbar: {
                 show: false
-            }
-        },
-        plotOptions: {
-            bar: {
-                horizontal: false,
-                columnWidth: '55%',
-                endingShape: 'rounded'
             },
+            background: '#1e1e1e'
         },
+        theme: {
+            mode: 'dark'
+        },
+        colors: ['#f7931a', '#f01010', '#ff4800'],
         dataLabels: {
             enabled: false
         },
         stroke: {
-            show: true,
-            width: 2,
-            colors: ['transparent']
+            curve: 'smooth',
+            width: 2
         },
+        series: [{
+                name: 'Investment',
+                data: investmentValues
+            },
+            {
+                name: 'Withdrawal',
+                data: withdrawalValues
+            },
+            {
+                name: 'Deposit',
+                data: depositValues
+            }
+        ],
         xaxis: {
             categories: months,
-        },
-        yaxis: {
-            title: {
-                text: ""
+            labels: {
+                style: {
+                    colors: '#ccc'
+                }
             }
         },
-        fill: {
-            opacity: 1
+        yaxis: {
+            labels: {
+                style: {
+                    colors: '#ccc'
+                }
+            }
         },
         tooltip: {
-            colors: ['#000'],
+            theme: 'dark',
             y: {
-                formatter: function (val) {
-                    return "$" + val + ""
-                }
+                formatter: (val) => `$${val}`
+            }
+        },
+        legend: {
+            labels: {
+                colors: '#fff'
             }
         }
     };
 
-    var chart = new ApexCharts(document.querySelector("#container"), options);
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
     chart.render();
-
-
-
-        function copyFunction() {
-            var copyText = document.getElementById("sponsorURL");
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            /*For mobile devices*/
-            document.execCommand("copy");
-            Notiflix.Notify.Success(`Copied: ${copyText.value}`);
-        }
-    </script>
-
-<!-- Popup Code Start 
-<div class="popup-overlay">
-    <div class="popup-content">
-        <h1>CONGRATULATIONS BLUEDRAKE1942</h1>
-        <p>You are now elgible to enroll in our Yearly Diamond Plat Promo plan, earn a whopping 55% Increase on your ROI(RETURN ON INVESTMENT) when you upgrade your account to meet the $50 000 Threshold.!</p>
-        <button onclick="closePopup()">Close</button>
-    </div>
-</div>
-
-<style>
-    .popup-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
-
-    .popup-content {
-        background: #ffffff;
-        padding: 30px;
-        border-radius: 10px;
-        text-align: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        max-width: 400px;
-        width: 80%;
-    }
-
-    .popup-content h1 {
-        color: red;
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-
-    .popup-content p {
-        font-size: 18px;
-        color: #333;
-    }
-
-    .popup-content button {
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .popup-content button:hover {
-        background-color: #0056b3;
-    }
-</style>
-
-<script>
-    function closePopup() {
-        document.querySelector('.popup-overlay').style.display = 'none';
-    }
-
-    // Automatically show the popup when the page loads
-    window.onload = function() {
-        document.querySelector('.popup-overlay').style.display = 'flex';
-    }
+});
 </script>
-<!-- Popup Code End -->
-
-</body>
-</html>
+@endpush

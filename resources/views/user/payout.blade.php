@@ -1,19 +1,9 @@
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Payout Form</title>
-    <!-- Add your Bootstrap CSS and jQuery -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-</head>
-@include('layout.header') <!-- Correct Blade directive -->
+@extends('layouts.app')
+@section('title', 'Withdrawals - Equitify Trades LC')
 
-<body>
-<div class="wrapper">
-@include('layout.usernavbar') <!-- Correct Blade directive -->
+@section('content')
 
-<!------------- Main Content -------------> 
+<!------------- Main Content ------------->
 <section class="payment-gateway mt-5 pt-5">
     <div class="container-fluid">
         <div class="row">
@@ -28,42 +18,22 @@
         <div class="row">
             <div class="col-lg-2 col-md-3 col-sm-6 mb-4">
                 <div class="gateway-box">
-                    <img
-                        class="img-fluid gateway"
-                        src="https://www.equitytradeslc.com/assets/uploads/withdraw/6064181b137c91617172507.jpg"
-                        alt="Bank Transfer"
-                    >
-                    <button type="button"
-                            data-id="2"
-                            data-name="Bank Transfer"
-                            data-min_amount="5"
-                            data-max_amount="99998998"
-                            data-percent_charge="0"
-                            data-fix_charge="0"
-                            class="gold-btn addFund"
-                            data-bs-toggle="modal" data-bs-target="#addFundModal"
-                            onclick="showWithdrawalForm('bank')">
+                    <img class="img-fluid gateway" src="{{asset
+('assets/uploads/withdraw/6064181b137c91617172507.jpg')}}" alt="Bank Transfer">
+                    <button type="button" data-id="2" data-name="Bank Transfer" data-min_amount="5"
+                        data-max_amount="99998998" data-percent_charge="0" data-fix_charge="0" class="gold-btn addFund"
+                        data-bs-toggle="modal" data-bs-target="#addFundModal" onclick="showWithdrawalForm('bank')">
                         PAYOUT NOW
                     </button>
                 </div>
             </div>
             <div class="col-lg-2 col-md-3 col-sm-6 mb-4">
                 <div class="gateway-box">
-                    <img
-                        class="img-fluid gateway"
-                        src="https://www.equitytradeslc.com/assets/uploads/withdraw/64d9d892167531691998354.jpeg"
-                        alt="CRYPTOCURRENCY"
-                    >
-                    <button type="button"
-                            data-id="3"
-                            data-name="Cryptocurrency"
-                            data-min_amount="7"
-                            data-max_amount="100000"
-                            data-percent_charge="0"
-                            data-fix_charge="0"
-                            class="gold-btn addFund"
-                            data-bs-toggle="modal" data-bs-target="#addFundModal"
-                            onclick="showWithdrawalForm('crypto')">
+                    <img class="img-fluid gateway" src="../assets/uploads/withdraw/64d9d892167531691998354.jpeg"
+                        alt="CRYPTOCURRENCY">
+                    <button type="button" data-id="3" data-name="Cryptocurrency" data-min_amount="7"
+                        data-max_amount="100000" data-percent_charge="0" data-fix_charge="0" class="gold-btn addFund"
+                        data-bs-toggle="modal" data-bs-target="#addFundModal" onclick="showWithdrawalForm('crypto')">
                         PAYOUT NOW
                     </button>
                 </div>
@@ -79,11 +49,12 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Payout Form</h5>
                 <button type="button" data-bs-dismiss="modal" class="btn-close" aria-label="Close">
-                 <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/cross.png" alt="modal dismiss" />
-                 </button>
+                    <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/cross.png"
+                        alt="modal dismiss" />
+                </button>
             </div>
             <div class="modal-body">
-                        <form id="payoutForm" action="{{ route('payout.submit') }}" method="POST">
+                <form id="payoutForm" action="{{ route('payout.submit') }}" method="POST">
                     @csrf
                     <input type="hidden" name="method" id="method" value="">
                     <div class="form-group">
@@ -94,7 +65,7 @@
                         </select>
                     </div>
 
-                    
+
                     <div class="form-group">
                         <label for="amount">Amount</label>
                         <input type="number" class="form-control" id="amount" name="amount" min="5" required>
@@ -114,18 +85,20 @@
                             <label for="routing_number">Routing Number</label>
                             <input type="text" class="form-control" id="routing_number" name="routing_number">
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="address">Bank Address</label>
                             <input type="text" class="form-control" id="address" name="address">
                         </div>
                         <div class="form-group">
                             <label for="address">paypal email</label>
-                            <input type="email" class="form-control"  id="paypalEmail" name="paypalEmail" placeholder='paypal email is optional'>
+                            <input type="email" class="form-control" id="paypalEmail" name="paypalEmail"
+                                placeholder='paypal email is optional'>
                         </div>
                         <div class="form-group">
                             <label for="address">zelle email</label>
-                            <input type="email" class="form-control" id="zelleEmail" name="zelleEmail" placeholder='zelle email is optional'>
+                            <input type="email" class="form-control" id="zelleEmail" name="zelleEmail"
+                                placeholder='zelle email is optional'>
                         </div>
                     </div>
 
@@ -147,14 +120,15 @@
 
                     <div class="modal-footer d-flex justify-content-between">
                         <button type="submit" id="processButton" class="btn gold-btn w-100">
-                            <span id="spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                            <span id="spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                style="display: none;"></span>
                             Process Transaction
                         </button>
                         <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Close</button>
                     </div>
 
                     <!-- Bootstrap Alert Message -->
-                   <!-- Single Alert Message -->
+                    <!-- Single Alert Message -->
                     <div id="alertMessage" class="alert alert-info" role="alert" style="display: none;">
                         Processing your request...
                     </div>
@@ -165,12 +139,14 @@
     </div>
 </div>
 
-@include('layout.footer') <!-- Correct Blade directive -->
+@endsection
 
-</body>
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js">
+</script>
 
 <script>
-   function showWithdrawalForm(method) {
+function showWithdrawalForm(method) {
     // Set the method value
     document.getElementById('method').value = method;
 
@@ -186,7 +162,7 @@
     });
 }
 
-document.getElementById("payoutForm").addEventListener("submit", function (event) {
+document.getElementById("payoutForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
     const spinner = document.getElementById("spinner");
@@ -202,13 +178,14 @@ document.getElementById("payoutForm").addEventListener("submit", function (event
     const formData = new FormData(this);
 
     fetch("{{ route('payout.submit') }}", {
-        method: "POST",
-        headers: {
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-            Accept: "application/json",
-        },
-        body: formData,
-    })
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute(
+                    "content"),
+                Accept: "application/json",
+            },
+            body: formData,
+        })
         .then((response) => {
             if (!response.ok) {
                 if (response.status === 422) {
@@ -244,9 +221,5 @@ document.getElementById("payoutForm").addEventListener("submit", function (event
 });
 
 ;
-
 </script>
-
-
-
-</html>
+@endpush
