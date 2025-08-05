@@ -10,7 +10,7 @@ Route::get('/api/checkAdmin', [App\Http\Controllers\auth\authCheckController::cl
 Route::post('/api/register', [App\Http\Controllers\auth\registerController::class, 'register']);
 Route::get('api/register/{username}', [App\Http\Controllers\auth\registerController::class, 'handleReferral'])->name('referral');
 Route::post('/api/login', [App\Http\Controllers\auth\loginController::class, 'login']);
-Route::post('/api/logout', [App\Http\Controllers\auth\loginController::class, 'logout']);
+Route::post('/logout', [App\Http\Controllers\auth\loginController::class, 'logout'])->name('logout');
 Route::post('/api/user-verification', [App\Http\Controllers\auth\loginController::class, 'activateAccount']);
 Route::get('/api/plans', [App\Http\Controllers\user\investmentController::class, 'index']);
 Route::post('/api/password/email', [App\Http\Controllers\auth\PasswordResetController::class, 'sendResetLinkEmail']);

@@ -113,20 +113,15 @@ class LoginController extends Controller
         }
     }
 
-    // Logout method
     public function logout(Request $request)
-    {
-        auth()->logout();
+{
+    auth()->logout();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
 
-        // Revoke tokens if using API tokens (optional)
-        if (Auth::check() && Auth::user()->tokens()->exists()) {
-            Auth::user()->tokens()->delete();
-        }
+    return redirect('/'); // Redirect to your Vue.js frontend or any page
+}
 
-        return response()->json(['message' => 'Logged out successfully'], 200);
-    }
 
 }

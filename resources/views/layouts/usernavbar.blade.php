@@ -77,6 +77,16 @@
                 <i class="fas fa-user-cog mr-3"></i> Profile Settings
             </a>
         </li>
+        <li>
+    <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+       style="color: #fff; text-decoration: none;">
+        <i class="fas fa-sign-out-alt me-2"></i> Logout
+    </a>
+
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
+</li>
     </ul>
 </div>
 
@@ -153,16 +163,15 @@
                         </li>
 
                         <li>
-                            <a class="dropdown-item" href="{{ url('/') }}"
-                                style="color: #fff; text-decoration: none; padding: 8px 10px; display: block;"
-                                onmouseover="this.style.backgroundColor='#000';"
-                                onmouseout="this.style.backgroundColor='transparent';">
-                                <i class="fas fa-sign-out-alt" style="margin-right: 10px;"></i> Logout
-                            </a>
-                            <form id="logout-form" action="{{ url('/') }}" method="POST" style="display: none;">
-                                @csrf
-                            </form>
-                        </li>
+                        <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                        style="color: #fff; text-decoration: none;">
+                            <i class="fas fa-sign-out-alt me-2"></i> Logout
+                        </a>
+
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </li>
                     </ul>
                 </div>
             </div>
