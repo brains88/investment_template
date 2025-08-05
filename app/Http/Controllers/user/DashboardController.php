@@ -2,13 +2,9 @@
 namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\Deposit;
-
 use App\Models\Investment;
-
 use App\Models\Plan;
-
 use App\Models\Referral;
 use App\Models\User;
 use App\Models\Withdrawal;use Auth;use Illuminate\Http\Request;use Illuminate\Support\Facades\DB;use Illuminate\Support\Facades\Hash;
@@ -136,5 +132,35 @@ class DashboardController extends Controller
    'message' => 'Password updated successfully!',
   ]);
  }
+
+ //For Interest Balance Transfer
+
+ public function transferInterest(Request $request)
+ {
+     $request->validate([
+         'amount' => 'required|numeric|min:1',
+     ]);
+ 
+     $user = Auth::user()->load('balance');
+     $balance = $user->balance;
+ 
+     if (!$balance || $balance->interest < $request->amount) {
+         return response()->json([
+             'status' => 'error',
+             'message' => 'Insufficient interest balance.',
+         ], 400);
+     }
+ 
+     $balance->interest -= $request->amount;
+     $balance->balance += $request->amount;
+     $balance->save();
+ 
+     return response()->json([
+         'status' => 'success',
+         'message' => 'Transfer successful.',
+         'updatedInterest' => number_format($balance->interest, 2),
+     ]);
+ }
+ 
 
 }

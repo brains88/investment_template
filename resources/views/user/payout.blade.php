@@ -18,8 +18,8 @@
         <div class="row">
             <div class="col-lg-2 col-md-3 col-sm-6 mb-4">
                 <div class="gateway-box">
-                    <img class="img-fluid gateway" src="{{asset
-('assets/uploads/withdraw/6064181b137c91617172507.jpg')}}" alt="Bank Transfer">
+                    <img class="img-fluid gateway"
+                        src="{{asset('assets/uploads/withdraw/6064181b137c91617172507.jpg')}}" alt="Bank Transfer">
                     <button type="button" data-id="2" data-name="Bank Transfer" data-min_amount="5"
                         data-max_amount="99998998" data-percent_charge="0" data-fix_charge="0" class="gold-btn addFund"
                         data-bs-toggle="modal" data-bs-target="#addFundModal" onclick="showWithdrawalForm('bank')">
@@ -49,8 +49,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Payout Form</h5>
                 <button type="button" data-bs-dismiss="modal" class="btn-close" aria-label="Close">
-                    <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/cross.png"
-                        alt="modal dismiss" />
+                    <img src="../assets/themes/deepblack/img/icon/cross.png" alt="modal dismiss" />
                 </button>
             </div>
             <div class="modal-body">

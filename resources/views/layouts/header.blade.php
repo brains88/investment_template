@@ -8,6 +8,7 @@
         content="Equitify Trades LC is a leading AI-driven trading and investment company. Maximize your returns with advanced AI algorithms and automated trading bots. Join us for secure and profitable investments." />
     <meta name="keywords"
         content="AI trading, automated trading, investment platform, crypto trading, stock trading, AI investment, secure trading, high returns, automated bots, Equitify Trades" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicon and Icons -->
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/img/logo.png') }}" />

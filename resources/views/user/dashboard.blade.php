@@ -6,12 +6,21 @@
 <section style="margin-top: 40px; margin-bottom: 30px; padding: 0 15px;">
     <!-- Page Heading -->
     <div class="row mt-4">
-        <div class="col">
-            <div class="header-text-full">
-                <h2 class="text-uppercase" style="font-weight: 700; padding-top: 10px;">Dashboard</h2>
+        <div
+            class="col-12 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+            <!-- Heading -->
+            <div class="header-text-full mb-2 mb-md-0">
+                <h2 class="text-uppercase" style="font-weight: 700;">Dashboard</h2>
             </div>
+
+            <!-- Button to open modal -->
+            <button type="button" class="btn gold-btn mb-3" data-bs-toggle="modal"
+                data-bs-target="#transferInterestModal">
+                Transfer Interest
+            </button>
         </div>
     </div>
+
     <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between;">
 
         <!-- Main Balance -->
@@ -238,15 +247,75 @@
         </div>
     </div>
 </section>
+
+
+<!-- Transfer Interest Modal -->
+<div class="modal fade" id="transferInterestModal" tabindex="-1" aria-labelledby="transferInterestModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Transfer from Interest Balance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                
+
+                <!-- Interest balance display -->
+                <p><strong>Interest Balance To Balance:</strong>
+                    <span id="interestBalance" style="color: #17c0eb; font-weight: bold; font-size:17px;">
+                        ${{ number_format($userData->balance->interest ?? 0.00, 2) }}
+                    </span>
+                </p>
+
+                <!-- Transfer form -->
+                <form id="interestTransferForm">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="transferAmount" class="form-label">Amount to Transfer</label>
+                        <input type="number" class="form-control" name="amount" id="transferAmount" required min="1"
+                            step="0.01">
+                    </div>
+                    <!-- Success/Error messages -->
+                <div id="transferMessage" class="mb-2"></div>
+
+
+
+                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
+                        <button type="submit" class="btn btn-success w-100 w-sm-auto" id="submitTransferBtn">
+                            <span class="spinner-border spinner-border-sm d-none" id="transferSpinner" role="status"
+                                aria-hidden="true"></span>
+                            Transfer
+                        </button>
+                        <button type="button" class="btn btn-danger w-100 w-sm-auto"
+                            data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const depositData = @json($depositData);
-    const withdrawalData = @json($withdrawalData);
-    const investmentData = @json($investmentData);
+document.addEventListener("DOMContentLoaded", function () {
+    const depositData = @json($depositData ?? []);
+    const withdrawalData = @json($withdrawalData ?? []);
+    const investmentData = @json($investmentData ?? []);
 
     const months = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
@@ -256,53 +325,31 @@ document.addEventListener("DOMContentLoaded", function() {
     const withdrawalValues = months.map((_, i) => withdrawalData[i + 1] || 0);
     const investmentValues = months.map((_, i) => investmentData[i + 1] || 0);
 
-    var options = {
+    const options = {
         chart: {
             type: 'area',
             height: 300,
-            toolbar: {
-                show: false
-            },
+            toolbar: { show: false },
             background: '#1e1e1e'
         },
-        theme: {
-            mode: 'dark'
-        },
+        theme: { mode: 'dark' },
         colors: ['#f7931a', '#f01010', '#ff4800'],
-        dataLabels: {
-            enabled: false
-        },
+        dataLabels: { enabled: false },
         stroke: {
             curve: 'smooth',
             width: 2
         },
-        series: [{
-                name: 'Investment',
-                data: investmentValues
-            },
-            {
-                name: 'Withdrawal',
-                data: withdrawalValues
-            },
-            {
-                name: 'Deposit',
-                data: depositValues
-            }
+        series: [
+            { name: 'Investment', data: investmentValues },
+            { name: 'Withdrawal', data: withdrawalValues },
+            { name: 'Deposit', data: depositValues }
         ],
         xaxis: {
             categories: months,
-            labels: {
-                style: {
-                    colors: '#ccc'
-                }
-            }
+            labels: { style: { colors: '#ccc' } }
         },
         yaxis: {
-            labels: {
-                style: {
-                    colors: '#ccc'
-                }
-            }
+            labels: { style: { colors: '#ccc' } }
         },
         tooltip: {
             theme: 'dark',
@@ -311,14 +358,79 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         },
         legend: {
-            labels: {
-                colors: '#fff'
-            }
+            labels: { colors: '#fff' }
         }
     };
 
-    var chart = new ApexCharts(document.querySelector("#chart"), options);
-    chart.render();
+    const chartEl = document.querySelector("#chart");
+    if (chartEl) {
+        const chart = new ApexCharts(chartEl, options);
+        chart.render();
+    } else {
+        console.error("#chart element not found");
+    }
+});
+//for Interest Balance Transfer
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('interestTransferForm');
+    const btn = document.getElementById('submitTransferBtn');
+    const spinner = document.getElementById('transferSpinner');
+    const messageBox = document.getElementById('transferMessage');
+    const interestBalanceDisplay = document.getElementById('interestBalance');
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        messageBox.innerHTML = '';
+        messageBox.className = 'mt-3';
+
+        spinner.classList.remove('d-none');
+        btn.disabled = true;
+
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const formData = new FormData(form);
+
+            const response = await fetch("{{ route('user.transfer.interest') }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.status === 'success') {
+                messageBox.classList.add('alert', 'alert-success');
+                messageBox.innerHTML = data.message || 'Transfer successful.';
+
+                if (data.updatedInterest !== undefined) {
+                    interestBalanceDisplay.textContent = `$${data.updatedInterest}`;
+                }
+
+                form.reset();
+
+                // Optional fade out
+                setTimeout(() => {
+                    messageBox.className = 'mt-3';
+                    messageBox.innerHTML = '';
+                }, 5000);
+            } else {
+                messageBox.classList.add('alert', 'alert-danger');
+                messageBox.innerHTML = data.message || 'Transfer failed.';
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            messageBox.classList.add('alert', 'alert-danger');
+            messageBox.innerHTML = 'Something went wrong. Please try again.';
+        } finally {
+            spinner.classList.add('d-none');
+            btn.disabled = false;
+        }
+    });
 });
 </script>
 @endpush
