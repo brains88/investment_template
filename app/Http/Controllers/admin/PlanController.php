@@ -19,7 +19,7 @@ class PlanController extends Controller
     // Display a listing of the plans
     public function index()
     {
-        $plans = Plan::paginate(10); // Show 10 plans per page
+        $plans = Plan::orderBy('created_at', 'desc')->paginate(10); // Show 10 plans per page
         return view('admin.plan', compact('plans'));
     }
 

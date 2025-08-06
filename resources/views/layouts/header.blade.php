@@ -47,18 +47,18 @@
     <link rel="stylesheet" type="text/css" href="../assets/themes/deepblack/assets/bootstrap/bootstrap.min.css" />
 
 
-    <link rel="stylesheet" type="text/css" href="assets/themes/deepblack/assets/plugins/owlcarousel/animate.css">
+    <link rel="stylesheet" type="text/css" href="../assets/themes/deepblack/assets/plugins/owlcarousel/animate.css">
     <link rel="stylesheet" type="text/css"
-        href="assets/themes/deepblack/assets/plugins/owlcarousel/owl.carousel.min.css">
+        href="../assets/themes/deepblack/assets/plugins/owlcarousel/owl.carousel.min.css">
     <link rel="stylesheet" type="text/css"
-        href="assets/themes/deepblack/assets/plugins/owlcarousel/owl.theme.default.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/themes/deepblack/assets/plugins/aos/aos.css">
+        href="../assets/themes/deepblack/assets/plugins/owlcarousel/owl.theme.default.min.css">
+    <link rel="stylesheet" type="text/css" href="../assets/themes/deepblack/assets/plugins/aos/aos.css">
     <link rel="stylesheet" type="text/css"
-        href="assets/themes/deepblack/assets/plugins/radial-progress/radialprogress.css">
-    <link rel="stylesheet" type="text/css" href="assets/themes/deepblack/assets/jquery/jquery-ui.css">
-    <link rel="stylesheet" type="text/css" href="assets/themes/deepblack/scss/flags.css" />
+        href="../assets/themes/deepblack/assets/plugins/radial-progress/radialprogress.css">
+    <link rel="stylesheet" type="text/css" href="../assets/themes/deepblack/assets/jquery/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="../assets/themes/deepblack/scss/flags.css" />
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/themes/deepblack/scss/style.css') }}">
-    <script src="assets/themes/deepblack/js/modernizr.custom.js"></script>
+    <script src="../assets/themes/deepblack/js/modernizr.custom.js"></script>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>

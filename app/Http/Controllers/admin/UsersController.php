@@ -21,7 +21,9 @@ class UsersController extends Controller
     public function index()
     {
                                                             // Fetch paginated users
-        $users = User::where('role', 'user')->paginate(10); // Adjust the number to suit your needs
+        $users = User::where('role', 'user')
+        ->orderBy('created_at', 'desc')
+        ->paginate(10); // Adjust the number to suit your needs
 
         return view('admin.users', compact('users'));
     }
@@ -165,8 +167,8 @@ class UsersController extends Controller
                     ->subject($request->email_subject)
                     ->html($emailBody);
             });
-
-            return redirect()->back()->with('success', 'Email sent successfully to ' . $user->name);
+            session()->flash('message', 'Email sent successfully to ' . $user->name);
+            return redirect()->route('admin.users');
         } catch (\Exception $e) {
             // Log the detailed error
             \Log::error('Email sending failed: ' . $e->getMessage());

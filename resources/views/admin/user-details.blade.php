@@ -1,10 +1,9 @@
-@include('layout.header') <!-- Header Component -->
+@extends('layouts.app')
+@section('title', 'User Detail - Equitify Trades LC')
 
-<body>
-<div class="wrapper">
-    @include('layout.adminnavbar') <!-- User Navbar -->
-        <!-- Admin Dashboard -->
-
+@section('content')
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
         <section class="statistic-section mt-5 pt-5 pb-0">
             <div class="container-fluid">
@@ -15,6 +14,7 @@
                         </div>
                     </div>
                 </div>
+
 <!-- Activation button, increament, decreament -->
 
 <!-- Admin Actions -->
@@ -64,7 +64,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="adjustModalLabel">Adjust Balance</h5>
                     <button type="button" data-bs-dismiss="modal" class="btn-close" aria-label="Close">
-                            <img src="https://www.equitytradeslc.com/assets/themes/deepblack/img/icon/cross.png" alt="modal dismiss" />
+                            <img src="{{asset('assets/themes/deepblack/img/icon/cross.png')}}" alt="modal dismiss" />
                         </button>
                 </div>
                 <div class="modal-body">
@@ -92,37 +92,37 @@
                 <div class="row">
                     <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
                         <div class="box">
-                            <h4>User Total Balance</h4>
+                            <h4 style="color:#fff;">User Total Balance</h4>
                             <h2>${{ number_format($user->balance ? $user->balance->balance : 0.00, 2) }}</h2>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3 mb-4 mb-lg-0">
                         <div class="box">
-                            <h4>User Interest Balance</h4>
+                            <h4 style="color:#fff;">User Interest Balance</h4>
                             <h2>${{ number_format($user->balance ? $user->balance->interest : 0.00, 2) }}</h2>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3 mb-4 mb-md-0 mb-3">
                         <div class="box">
-                            <h4>User Total Deposit</h4>
+                            <h4 style="color:#fff;">User Total Deposit</h4>
                             <h2>${{ number_format($totalDepositAmount, 2) ?? 0.00}}</h2>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3 mt-3">
                         <div class="box">
-                            <h4>User Total Withdrawals</h4>
+                            <h4 style="color:#fff;">User Total Withdrawals</h4>
                             <h2>${{ number_format($totalWithdrawalAmount, 2) ?? 0.00 }}</h2>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3 mb-4 mb-3">
                         <div class="box">
-                            <h4>User Total Investment</h4>
+                            <h4 style="color:#fff;">User Total Investment</h4>
                             <h2>${{ number_format($totalInvestmentAmount, 2) ?? 0.00 }}</h2>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg-3 mb-4 mb-3">
                         <div class="box">
-                            <h4>User Total Referral</h4>
+                            <h4 style="color:#fff;">User Total Referral</h4>
                             <h2>${{ $totalReferredUsers ?? 0}}</h2>
                         </div>
                     </div>
@@ -551,7 +551,11 @@
             </div>
         </section>
 
-        @include('layout.footer') <!-- Footer Component -->
+@endsection
+@push('scripts')
+<!-- Bootstrap JS and jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
 
     // Show Alert
@@ -773,4 +777,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 </script>
-</body>
+@endpush

@@ -1,8 +1,7 @@
-@include('layout.header') <!-- Header Component -->
+@extends('layouts.app')
+@section('title', 'Registered Users - Equitify Trades LC')
 
-<body>
-<div class="wrapper">
-    @include('layout.adminnavbar') <!-- User Navbar -->
+@section('content')
 
     <section class="transaction-history mt-5 pt-5">
         <div class="container-fluid">
@@ -13,7 +12,27 @@
                     </div>
                 </div>
             </div>
+            <!-- Success & Error Messages -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    @if(session('message'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('message') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
+    <!-- End Success & Error Messages -->
             <div class="row">
                 <div class="col">
                     <div class="table-parent table-responsive">
@@ -79,72 +98,38 @@
                                     </tr>
 
                                      <!-- Ban Modal -->
-                                     <div class="modal fade" id="banModal{{ $user->id }}" tabindex="-1" aria-labelledby="banModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="banModalLabel">Ban User</h5>
-                                                    <button type="button" data-bs-dismiss="modal" class="btn-close" aria-label="Close"></button>
-                                                </div>
-                                                <form action="{{ route('user.email', $user->id) }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-body">
-                                                        <div class="mb-3">
-                                                            <label for="ban_reason" class="form-label">Reason for Banning</label>
-                                                            <textarea id="ban_reason" name="ban_reason" class="form-control" required></textarea>
-                                                        </div>
-                                                    </div>
-                                                    @if(session('message'))
-                                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                                            {{ session('message') }}
-                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                        </div>
-                                                    @endif
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-warning" id="banButton{{ $user->id }}">
-                                                            Ban User
-                                                            <span class="spinner-border spinner-border-sm d-none" id="spinner{{ $user->id }}" role="status" aria-hidden="true"></span>
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Ban Modal -->
-                                    <div class="modal fade" id="banModal{{ $user->id }}" tabindex="-1" aria-labelledby="banModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="banModalLabel">Ban User</h5>
-                                                    <button type="button" data-bs-dismiss="modal" class="btn-close" aria-label="Close"></button>
-                                                </div>
-                                                <form action="{{ route('user.ban', $user->id) }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-body">
-                                                        <div class="mb-3">
-                                                            <label for="ban_reason" class="form-label">Reason for Banning</label>
-                                                            <textarea id="ban_reason" name="ban_reason" class="form-control" required></textarea>
-                                                        </div>
-                                                    </div>
-                                                    @if(session('message'))
-                                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                                            {{ session('message') }}
-                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                        </div>
-                                                    @endif
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                        <button type="submit" class="btn btn-warning" id="banButton{{ $user->id }}">
-                                                            Ban User
-                                                            <span class="spinner-border spinner-border-sm d-none" id="spinner{{ $user->id }}" role="status" aria-hidden="true"></span>
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
+<div class="modal fade" id="banModal{{ $user->id }}" tabindex="-1" aria-labelledby="banModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="banModalLabel">Ban User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('user.ban', $user->id) }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="ban_reason" class="form-label">Reason for Banning</label>
+                        <textarea id="ban_reason" name="ban_reason" class="form-control" required></textarea>
+                    </div>
+                </div>
+                @if(session('message'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('message') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-warning" id="banButton{{ $user->id }}">
+                        Ban User
+                        <span class="spinner-border spinner-border-sm d-none" id="spinner{{ $user->id }}" role="status" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
                                     <!-- Delete Modal -->
                                     <div class="modal fade" id="deleteModal{{ $user->id }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -227,13 +212,8 @@
             </div>
         </div>
     </section>
-</div>
-</div>
-</div>
-
-
-@include('layout.footer') 
-
+@endsection
+@push('scripts')
 <script>
     document.querySelectorAll('form[id^="banForm"]').forEach(form => {
         form.addEventListener('submit', function(e) {
@@ -275,9 +255,5 @@
     sendButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...`;
 }
 
-
-
 </script>
-
-</body>
-</html>
+@endpush

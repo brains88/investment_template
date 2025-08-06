@@ -61,29 +61,35 @@ class UsersDatialsController extends Controller
     //Approve Withdrawal 
     public function approveWithdrawal($id)
     {
-        $Withdrawal = Withdrawal::findOrFail($id);
-
-        if ($Withdrawal->status !== 'pending') {
+        $withdrawal = Withdrawal::findOrFail($id);
+    
+        if ($withdrawal->status !== 'pending') {
             return back()->with('error', 'Withdrawal is not pending.');
         }
-
-        // Deduct the Withdrawal amount from user's balance
-        $user = $Withdrawal->user;
-        $userBalance = $user->balance;
-
-        if ($userBalance && $userBalance->balance >= $Withdrawal->amount) {
-            $userBalance->balance -= $Withdrawal->amount;
-            $userBalance->save();
-
-            // Update Withdrawal status to completed
-            $Withdrawal->status = 'complete';
-            $Withdrawal->save();
-
-            return back()->with('success', 'Withdrawal approved successfully.');
+    
+        $user = $withdrawal->user;
+        $balance = $user->balance;
+    
+        if (!$balance) {
+            return back()->with('error', 'User has no balance record.');
         }
-
-        return back()->with('error', 'Insufficient balance for this Withdrawal.');
+    
+        // Check if withdrawal amount is greater than user balance
+        if ($withdrawal->amount > $balance->balance) {
+            return back()->with('error', 'Withdrawal amount exceeds available balance.');
+        }
+    
+        // Deduct the withdrawal amount
+        $balance->balance -= $withdrawal->amount;
+        $balance->save();
+    
+        // Update withdrawal status
+        $withdrawal->status = 'complete';
+        $withdrawal->save();
+    
+        return back()->with('success', 'Withdrawal approved successfully.');
     }
+    
 
     //Delete Deposit
         public function deleteWithdrawal($id)
@@ -112,15 +118,12 @@ class UsersDatialsController extends Controller
     //Send Activation Mail
     public function sendActivationEmail($id)
     {
-        Log::info('Send Activation Email hit for user ID: ' . $id);
     
         $user = User::findOrFail($id);
         $verificationCode = $user->verification_code;
     
         try {
-            // Simulate email sending for debugging
-            Log::info('Sending email to: ' . $user->email);
-    
+
             
              Mail::to($user->email)->send(new WelcomeMail($user, $verificationCode));
     

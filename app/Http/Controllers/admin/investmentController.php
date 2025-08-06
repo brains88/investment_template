@@ -31,7 +31,7 @@ class investmentController extends Controller
 
         // Return the view with the plans and user data
         return view('user.plan', compact('plans', 'userData'));
- 
+    }
      public function userInvestments()
     {
     $investments = Investment::with('plan')->where('user_id', Auth::id())->paginate(10);

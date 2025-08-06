@@ -1,10 +1,7 @@
-@include('layout.header')
+@extends('layouts.app')
+@section('title', 'Withdrawal History - Equitify Trades LC')
 
-<body>
-    <div class="wrapper">
-        @include('layout.adminnavbar') 
-
-        <!-- Withdrawal History -->
+@section('content')
 <section class="transaction-history mt-5 pt-5">
     <div class="container-fluid">
         <div class="row">
@@ -14,7 +11,22 @@
              </div>
           </div>
        </div>
+    <!-- Success & Error Messages -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <!-- End Success & Error Messages -->
         <div class="row">
             <div class="col">
                 <div class="table-parent table-responsive">
@@ -47,15 +59,16 @@
                                     </td>
                                     <td>{{ $withdrawal->created_at->format('d M Y h:i A') }}</td>
                                     <td>
-                                        @if ($withdrawal->status === 'pending')
-                                            <form method="POST" action="{{ route('withdrawals.approve', $withdrawal->id) }}" style="display: inline-block;">
-                                                @csrf
-                                                <button class="btn btn-success btn-sm" type="submit">
-                                                    <span class="spinner-border spinner-border-sm d-none" role="status"></span>
-                                                    Approve
-                                                </button>
-                                            </form>
-                                        @endif
+                                    @if ($withdrawal->status === 'pending')
+                                        <form method="POST" action="{{ route('withdrawals.approve', $withdrawal->id) }}" style="display: inline-block;">
+                                            @csrf
+                                            <button class="btn btn-success btn-sm" type="submit">
+                                                <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                                                Approve
+                                            </button>
+                                        </form>
+                                    @endif
+
                                         <button class="btn btn-info btn-sm feedback-btn" 
                                             data-id="{{ $withdrawal->id }}" 
                                             data-feedback="{{ $withdrawal->admin_feedback }}"
@@ -143,11 +156,9 @@
         </div>
     </div>
 </section>
+@endsection
 
-    </div>
-
-    @include('layout.footer')
-
+@push('scripts')
     <script>
     document.querySelectorAll('button[type="submit"]').forEach(button => {
         button.addEventListener('click', function () {
@@ -233,5 +244,4 @@
     });
 });
 </script>
-
-</body>
+@endpush

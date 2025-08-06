@@ -92,7 +92,7 @@ Route::middleware(['auth', 'user'])->prefix('user')->group(function () {
  Route::get('/profile', [App\Http\Controllers\user\ProfileController::class, 'index'])->name('user.profile');
  Route::post('/profile/update-image', [App\Http\Controllers\user\ProfileController::class, 'updateImage'])->name('profile.update-image');
  Route::put('/profile/update-info', [App\Http\Controllers\user\ProfileController::class, 'updateInfo'])->name('profile.update-info');
- Route::post('/profile/update-password', [App\Http\Controllers\user\ProfileController::class, 'updatePassword'])->name('profile.update-password');
+ Route::post('/profile/update-password', [App\Http\Controllers\user\ProfileController::class, 'updatePassword'])->name('user.profile.update-password');
  Route::post('/profile/submit-identity', [App\Http\Controllers\user\ProfileController::class, 'submitIdentity'])->name('profile.submit-identity');
  Route::post('/profile/submit-address', [App\Http\Controllers\user\ProfileController::class, 'submitAddress'])->name('profile.submit-address');
  Route::post('/investment/submit/{plan}', [App\Http\Controllers\user\investmentController::class, 'makeInvestment'])->name('investment.submit');

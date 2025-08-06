@@ -29,7 +29,7 @@ class WithdrawalController extends Controller
 public function getWithdrawals(Request $request)
 {
     $user = $request->user();
-    $withdrawals = Withdrawal::paginate(6); // Example pagination
+    $withdrawals = Withdrawal::orderBy('created_at', 'desc')->paginate(6); // Example pagination
     return view('admin.payout-history', compact('withdrawals'));
 }
 

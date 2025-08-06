@@ -22,6 +22,7 @@ class TransactionsController extends Controller
         $transactions = Transactions::where('user_id', auth()->id())
             ->where('status', 'completed')
             ->whereIn('type', ['transfer', 'withdrawal', 'investment'])
+            ->orderBy('created_at', 'desc')
             ->get();
 
         // Pass the transactions to the view

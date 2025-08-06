@@ -1,12 +1,7 @@
-@include('layout.header')
+@extends('layouts.app')
+@section('title', 'Referrals- Equitify Trades LC')
 
-<body>
-    <div class="wrapper">
-        @include('layout.adminnavbar') 
- <!------------- others main dashboard body content ------------>
-            
-<!-- My Referral -->
-
+@section('content')
 <section class="transaction-history mt-5 pt-5">
     <div class="container-fluid">
        <div class="row">
@@ -16,7 +11,22 @@
              </div>
           </div>
        </div>
+       <!-- Success & Error Messages -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <!-- End Success & Error Messages -->
        <div class="row">
           <div class="col">
              <div class="table-parent table-responsive">
@@ -59,5 +69,4 @@
        </div>
     </div>
 </section>
-</body>
-</html>
+@endsection

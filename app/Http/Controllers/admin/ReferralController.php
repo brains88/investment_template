@@ -18,7 +18,7 @@ class ReferralController extends Controller
     {
     
         // Get referrals for the authenticated user
-        $referrals = Referral::with('referredUser')->paginate(6);
+        $referrals = Referral::with('referredUser')->orderBy('created_at', 'desc')->paginate(6);
     
         return view('admin.referral', compact('referrals'));
     }

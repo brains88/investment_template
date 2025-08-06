@@ -1,12 +1,7 @@
-@include('layout.header')
-<!-- Header Component -->
+@extends('layouts.app')
+@section('title', 'Investment History- Equitify Trades LC')
 
-<body>
-    <div class="wrapper">
-        @include('layout.adminnavbar')
-        <!-- User Navbar -->
-
-        <!-- Invest history -->
+@section('content')
         <section class="transaction-history mt-5 pt-5">
             <div class="container-fluid">
                 <div class="row">
@@ -96,10 +91,8 @@
                 </div>
             </div>
         </section>
-
-    </div>
-    @include('layout.footer')
-
+  @endsection
+@push('scripts')
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.countdown').forEach(countdown => {
@@ -150,5 +143,4 @@
         });
     });
     </script>
-
-</body>
+@endpush

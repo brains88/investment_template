@@ -1,21 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wallet Management</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-    <!-- Include Header -->
-    @include('layout.header')
+@extends('layouts.app')
+@section('title', 'Wallet - Equitify Trades LC')
 
-    <div class="wrapper">
-        <!-- Include Admin Navbar -->
-        @include('layout.adminnavbar')
-
+@section('content')
         <!-- Wallet Management Section -->
         <section class="transaction-history mt-5 pt-5">
             <div class="container-fluid">
@@ -29,7 +15,22 @@
                         </div>
                     </div>
                 </div>
+                <!-- Success & Error Messages -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <!-- End Success & Error Messages -->
                 <div class="row mt-4">
                     <div class="col">
                         <div class="table-responsive">
@@ -174,8 +175,9 @@
             </div>
         </div>
     </div>
-    @include('layout.footer')
+ @endsection
     <!-- JavaScript -->
+     @push('scripts')
     <script>
     document.querySelectorAll('.delete-wallet').forEach(button => {
         button.addEventListener('click', function () {
@@ -212,6 +214,4 @@
         });
     });
 </script>
-
-</body>
-</html>
+@endpush

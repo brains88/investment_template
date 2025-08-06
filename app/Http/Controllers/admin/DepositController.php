@@ -17,7 +17,7 @@ class DepositController extends Controller
 
     public function GetUserdeposits()
     {
-        $deposits = Deposit::paginate(6);   // Paginate results (6 per page)
+        $deposits = Deposit::orderBy('created_at', 'desc')->paginate(6);   // Paginate results (6 per page)
         
         
         return view('admin.fund-history', compact('deposits'));

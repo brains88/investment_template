@@ -92,7 +92,7 @@
                             ></i>
                         </a>
                         <a
-                            href="https://t.me/EQUITIFYTRADES"
+                            href=""
                             target="_blank"
                             class="text-white ml-2"
                         >

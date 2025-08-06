@@ -11,7 +11,9 @@ class TransferController extends Controller
 
     public function GetUsertransfers()
     {
-        $transfers = Transfer::with(['sentTransfers', 'receivedTransfers'])->paginate(10); // Adjust pagination as needed
+        $transfers = Transfer::with(['sentTransfers', 'receivedTransfers'])
+        ->orderBy('created_at', 'desc')
+        ->paginate(10); // Adjust pagination as needed
         return view('admin.transfer', compact('transfers'));
     }
 

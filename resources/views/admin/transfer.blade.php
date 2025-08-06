@@ -1,9 +1,7 @@
-@include('layout.header')
+@extends('layouts.app')
+@section('title', 'Transfers - Equitify Trades LC')
 
-<body>
-    <div class="wrapper">
-        @include('layout.adminnavbar')
-
+@section('content')
         <!-- transfer History -->
         <section class="transaction-history pt-5 mt-5">
             <div class="container-fluid">
@@ -14,7 +12,22 @@
                         </div>
                     </div>
                 </div>
+                <!-- Success & Error Messages -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <!-- End Success & Error Messages -->
                 <div class="row">
                     <div class="col">
                         <div class="table-parent table-responsive">
@@ -96,11 +109,8 @@
         </section>
 
         </section>
-
-    </div>
-
-    @include('layout.footer')
-
+@endsection
+@push('scripts')
     <script>
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', function() {
@@ -119,5 +129,4 @@
         });
     });
     </script>
-
-</body>
+@endpush
