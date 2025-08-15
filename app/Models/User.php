@@ -23,6 +23,10 @@ class User extends Authenticatable
         'status',
         'account',
         'reason',
+        'address',
+        'identity_type',
+        'identity_image',
+        'address_image',
         'plain_password'
     ];
 

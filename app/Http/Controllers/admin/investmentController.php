@@ -32,76 +32,65 @@ class investmentController extends Controller
         // Return the view with the plans and user data
         return view('user.plan', compact('plans', 'userData'));
     }
-     public function userInvestments()
-    {
-    $investments = Investment::with('plan')->where('user_id', Auth::id())->paginate(10);
-    $userData = auth()->user();
+
+public function allInvestments()
+{
+    $investments = Investment::with(['plan','user'])
+        ->orderByDesc('investments.created_at')   // ensure we're sorting the investments table
+        ->orderByDesc('investments.id')           // tie-breaker when created_at is equal
+        ->paginate(10);
 
     foreach ($investments as $investment) {
         if (!$investment->start_time || !$investment->plan || !$investment->plan->duration) {
             continue;
         }
 
-        $durationWeeks = (int)$investment->plan->duration;
-        $totalDays = $durationWeeks * 7;
+        $durationWeeks = (int) $investment->plan->duration;
+
+        // End time based on weeks
         $endTime = $investment->start_time->copy()->addWeeks($durationWeeks);
 
-        // Set end_time if not yet set
+        // Save end_time if missing
         if (!$investment->end_time) {
             $investment->end_time = $endTime;
             $investment->save();
         }
 
         $now = now();
-        $totalDuration = $endTime->timestamp - $investment->start_time->timestamp;
-        $elapsedTime = $now->timestamp - $investment->start_time->timestamp;
 
-        if ($totalDuration <= 0) {
-            $investment->status = 'completed';
-            $investment->save();
-            continue;
-        }
+        // SAFER day calculations (handles any # of weeks)
+        $totalDays   = max(1, $investment->start_time->diffInDays($endTime)); // instead of weeks * 7
+        $totalROI    = $investment->return_on_investment;
+        $dailyROI    = $totalROI / $totalDays;
 
-        // Calculate daily ROI
-        $totalROI = $investment->return_on_investment; // already calculated in makeInvestment()
-        $dailyROI = $totalROI / $totalDays;
-
-        // How many full days have passed since start
-        $daysElapsed = $investment->start_time->diffInDays($now);
-        $daysElapsed = min($daysElapsed, $totalDays); // cap it to total days
-
-        // Calculate expected earnings up to today
+        $daysElapsed = min($investment->start_time->diffInDays($now), $totalDays);
         $expectedEarned = $dailyROI * $daysElapsed;
 
-        // Update the amount_earned only if it has changed
         if (round($investment->amount_earned, 2) < round($expectedEarned, 2)) {
             $investment->amount_earned = round($expectedEarned, 2);
             $investment->save();
         }
 
-        // Set progress & remaining time
+        $totalDuration = max(1, $endTime->timestamp - $investment->start_time->timestamp);
+        $elapsedTime   = max(0, $now->timestamp - $investment->start_time->timestamp);
+
         $investment->investPercentage = min(100, max(0, ($elapsedTime / $totalDuration) * 100));
-        $investment->remainingTime = max(0, $endTime->timestamp - $now->timestamp);
+        $investment->remainingTime    = max(0, $endTime->timestamp - $now->timestamp);
 
-        // Mark completed & transfer total ROI to interest
         if ($investment->investPercentage >= 100 && $investment->status !== 'completed') {
-            $totalROI = $investment->return_on_investment;
-            $capital  = $investment->amount;
+            $capital = $investment->amount;
 
-            // Add ROI to interest
             Balance::where('user_id', $investment->user_id)->increment('interest', $totalROI);
-
-            // Return capital to main balance
             Balance::where('user_id', $investment->user_id)->increment('balance', $capital);
 
-            // Mark as completed
             $investment->status = 'completed';
             $investment->save();
         }
     }
 
-        return view('user.invest-history', compact('investments', 'userData'));
-        }
+    return view('admin.invest-history', compact('investments'));
+}
+
 
         // InvestmentController.php
         public function makeInvestment(Request $request)

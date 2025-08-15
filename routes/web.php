@@ -62,7 +62,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
  Route::post('/logout', [App\Http\Controllers\auth\loginController::class, 'logout'])->name('admin.logout');
  Route::get('/deposits', [App\Http\Controllers\admin\DepositController::class, 'GetUserdeposits'])->name('admin.fund-history');
- Route::get('/invest-history', [App\Http\Controllers\admin\investmentController::class, 'userInvestments'])->name('admin.invest-history');
+ Route::get('/invest-history', [App\Http\Controllers\admin\investmentController::class, 'allInvestments'])->name('admin.invest-history');
  Route::get('/transfer-history', [App\Http\Controllers\admin\TransferController::class, 'GetUsertransfers'])->name('admin.transfer-history');
  Route::delete('/transfers/{id}', [App\Http\Controllers\admin\TransferController::class, 'destroy'])->name('transfers.delete');
  Route::get('/referrals', [App\Http\Controllers\admin\ReferralController::class, 'GetAllReferrals'])->name('admin.referrals');
@@ -97,6 +97,12 @@ Route::middleware(['auth', 'user'])->prefix('user')->group(function () {
  Route::post('/profile/submit-address', [App\Http\Controllers\user\ProfileController::class, 'submitAddress'])->name('profile.submit-address');
  Route::post('/investment/submit/{plan}', [App\Http\Controllers\user\investmentController::class, 'makeInvestment'])->name('investment.submit');
  Route::post('/transfer-interest', [App\Http\Controllers\user\DashboardController::class, 'transferInterest'])->name('user.transfer.interest');
+ Route::post('/profile/update-image', [App\Http\Controllers\user\ProfileController::class, 'updateImage'])->name('profile.update-image');
+ Route::put('/profile/update-info', [App\Http\Controllers\user\ProfileController::class, 'updateInfo'])->name('profile.update-info');
+ Route::post('/profile/update-password', [App\Http\Controllers\user\ProfileController::class, 'updatePassword'])->name('profile.update-password');
+ Route::post('/profile/submit-identity', [App\Http\Controllers\user\ProfileController::class, 'submitIdentity'])->name('profile.submit-identity');
+ Route::post('/profile/submit-address', [App\Http\Controllers\user\ProfileController::class, 'submitAddress'])->name('profile.submit-address');
+
 
 });
 

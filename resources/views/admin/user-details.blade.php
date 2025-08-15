@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'User Detail - Equitify Trades LC')
+@section('title', 'User Detail - Equitify Trust LC')
 
 @section('content')
 <!-- Bootstrap CSS -->
@@ -130,6 +130,57 @@
             </div>
         </section>
         
+        <!-- User Verification Section -->
+        <div class="card mb-4">
+    <div class="card-header">
+        <h5>User Verification Details</h5>
+    </div>
+    <div class="card-body">
+        <!-- Address -->
+        <p><strong>Address:</strong> {{ $user->address }}</p>
+
+        <!-- Identity Type -->
+        <p><strong>Identity Type:</strong> {{ $user->identity_type }}</p>
+
+        <div class="row">
+            <!-- Identity Image -->
+            <div class="col-md-6 mb-3">
+                <h6>Identity Document</h6>
+                @if($user->identity_image)
+                    <a href="{{ asset('storage/identity/' . $user->identity_image) }}" target="_blank">
+                        <img src="{{ asset('storage/identity/' . $user->identity_image) }}" 
+                             alt="Identity Image" class="img-fluid rounded border" style="max-height:250px;">
+                    </a>
+                    <br>
+                    <a href="{{ asset('storage/identity/' . $user->identity_image) }}" download class="btn btn-sm btn-primary mt-2">
+                        Download Identity
+                    </a>
+                @else
+                    <p class="text-muted">No identity uploaded.</p>
+                @endif
+            </div>
+
+            <!-- Address Proof -->
+            <div class="col-md-6 mb-3">
+                <h6>Address Proof</h6>
+                @if($user->proof_of_address)
+                    <a href="{{ asset('storage/address/' . $user->proof_of_address) }}" target="_blank">
+                        <img src="{{ asset('storage/address/' . $user->proof_of_address) }}" 
+                             alt="Address Proof" class="img-fluid rounded border" style="max-height:250px;">
+                    </a>
+                    <br>
+                    <a href="{{ asset('storage/address/' . $user->proof_of_address) }}" download class="btn btn-sm btn-primary mt-2">
+                        Download Address Proof
+                    </a>
+                @else
+                    <p class="text-muted">No address proof uploaded.</p>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+         <!-- The end of Verification section -->
             <!-- Fund history -->
             <section class="transaction-history mt-5 pt-5">
     <div class="container-fluid">
